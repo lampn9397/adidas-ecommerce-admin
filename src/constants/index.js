@@ -22,4 +22,8 @@ export const sideMenuItems = [
     path: '/',
     icon: <FaDollarSign />,
   },
-]
+];
+
+export const localStorageKey = {
+  SIDEBAR_COLLAPSED: 'SIDEBAR_COLLAPSED',
+};

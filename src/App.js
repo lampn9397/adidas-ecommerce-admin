@@ -1,59 +1,63 @@
 import React from 'react';
-import { Layout, Menu, Avatar, Typography } from 'antd';
-import { Switch, Route, BrowserRouter } from 'react-router-dom';
-// import { ConnectedRouter } from 'connected-react-router';
+import { Layout } from 'antd';
+import { push } from 'connected-react-router';
+import { MenuOutlined } from '@ant-design/icons';
+import { Route, Switch } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { ConnectedRouter } from 'connected-react-router';
 
 import 'antd/dist/antd.css';
 
 import './App.css';
 import styles from './App.module.css';
 
+import AppSideBar from './components/AppSideBar';
 import UserManagePage from './pages/UserManagePage';
 
-// import { history } from './redux/store';
+import { history } from './redux/store';
 import { sideMenuItems } from './constants';
+import * as ActionTypes from './redux/actionTypes';
 
-const { Content, Sider } = Layout;
+const { Content, Header } = Layout;
 
 const App = () => {
-  const [state, setState] = React.useState({
-    collapsed: false,
-  });
+  const dispatch = useDispatch();
 
-  const onCollapse = React.useCallback(() => {
-    setState((prevState) => ({
-      ...prevState,
-      collapsed: !prevState.collapsed,
-    }));
-  }, []);
-  // abc
-  const renderMenuItem = React.useCallback((item) => (
-    <Menu.Item key={item.title} icon={item.icon}>
-      {item.title}
-    </Menu.Item>
-  ), []);
+  const collapsed = useSelector((state) => state.app.collapsed);
+
+  const onClickToggle = React.useCallback(() => {
+    dispatch({ type: ActionTypes.TOGGLE_SIDEBAR });
+  }, [dispatch]);
+
+  const onClickMenuItem = React.useCallback((item) => {
+    dispatch(push(item.path));
+  }, [dispatch]);
 
   return (
-    <BrowserRouter>
-      <Layout style={{ minHeight: '100vh', maxHeight: '100vh' }}>
-        <Sider collapsible collapsed={state.collapsed} onCollapse={onCollapse}>
-          <div className={styles.logoContainer}>
-            <Avatar size={state.collapsed ? 36 : 128} src="https://picsum.photos/200" />
-            {!state.collapsed && <Typography.Title level={4} className={styles.username}>Ngô Đức Minh Trí</Typography.Title>}
-          </div>
-          <Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
-            {sideMenuItems.map(renderMenuItem)}
-          </Menu>
-        </Sider>
-        <Layout className="site-layout">
-          <Content>
+    <ConnectedRouter history={history}>
+      <Layout className={styles.layoutContainer}>
+        {/* LEFT SIDE BAR */}
+        <AppSideBar
+          collapsed={collapsed}
+          sideMenuItems={sideMenuItems}
+          onClickMenuItem={onClickMenuItem}
+        />
+
+        <Layout className={styles.layoutContainer}>
+          <Header className={styles.header}>
+            <MenuOutlined
+              className={styles.toggleMenuIcon}
+              onClick={onClickToggle}
+            />
+          </Header>
+          <Content className={styles.content}>
             <Switch>
               <Route path="/" component={UserManagePage} />
             </Switch>
           </Content>
         </Layout>
       </Layout>
-    </BrowserRouter>
+    </ConnectedRouter>
   );
 }
 
