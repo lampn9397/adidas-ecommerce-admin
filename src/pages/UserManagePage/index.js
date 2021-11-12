@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button, Input } from 'antd';
+import { Table, Button, Input, Modal } from 'antd';
 
 import styles from './styles.module.css';
 
@@ -17,6 +17,25 @@ const UserManagePage = () => {
   });
 
   const onClickRemove = React.useCallback((item) => () => {
+    Modal.confirm({
+      maskClosable: true,
+      okButtonProps: { danger: true },
+      title: `Are you sure want to delete ${item.username}?`,
+      onOk: () => {
+        setState((prevState) => {
+          const users = JSON.parse(JSON.stringify(prevState.users));
+
+          const itemIndex = users.findIndex((x) => x.id === item.id);
+
+          users.splice(itemIndex, 1);
+
+          return {
+            ...prevState,
+            users,
+          }
+        });
+      }
+    });
   }, []);
 
   const onSearch = React.useCallback((text) => {

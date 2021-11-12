@@ -12,12 +12,10 @@ import './App.css';
 import styles from './App.module.css';
 
 import AppSideBar from './components/AppSideBar';
-import UserManagePage from './pages/UserManagePage';
 
 import { history } from './redux/store';
-import { sideMenuItems } from './constants';
+import { routes, sideMenuItems } from './constants';
 import * as ActionTypes from './redux/actionTypes';
-import OrderManagePage from './pages/OrderManagePage';
 
 const { Content, Header } = Layout;
 
@@ -33,6 +31,14 @@ const App = () => {
   const onClickMenuItem = React.useCallback((item) => {
     dispatch(push(item.path));
   }, [dispatch]);
+
+  const renderRouteItem = React.useCallback((key) => (
+    <Route
+      path={routes[key].path}
+      exact={routes[key].exact}
+      component={routes[key].component}
+    />
+  ), []);
 
   return (
     <ConnectedRouter history={history}>
@@ -53,7 +59,7 @@ const App = () => {
           </Header>
           <Content className={styles.content}>
             <Switch>
-              <Route path="/" component={OrderManagePage} />
+              {Object.keys(routes).map(renderRouteItem)}
             </Switch>
           </Content>
         </Layout>

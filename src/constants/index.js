@@ -1,10 +1,34 @@
 import React from 'react';
 import { FaBox, FaUserCircle, FaDollarSign, FaShoppingCart } from 'react-icons/fa';
 
+import NotFound from '../pages/NotFound';
+import UserManagePage from '../pages/UserManagePage';
+import OrderManagePage from '../pages/OrderManagePage';
+
+export const routes = {
+  HOME: {
+    path: '/',
+    exact: true,
+    component: UserManagePage
+  },
+  USERS: {
+    path: '/users',
+    component: UserManagePage
+  },
+  ORDERS: {
+    path: '/orders',
+    component: OrderManagePage
+  },
+  NOT_FOUND: {
+    path: '*',
+    component: NotFound,
+  }
+};
+
 export const sideMenuItems = [
   {
     title: 'Quản lý người dùng',
-    path: '/',
+    path: routes.USERS.path,
     icon: <FaUserCircle />,
   },
   {
@@ -14,7 +38,7 @@ export const sideMenuItems = [
   },
   {
     title: 'Quản lý đơn hàng',
-    path: '/',
+    path: routes.ORDERS.path,
     icon: <FaShoppingCart />,
   },
   {
