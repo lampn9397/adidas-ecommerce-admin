@@ -1,19 +1,47 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { push } from 'connected-react-router';
 import { Table, Button, Input, Modal } from 'antd';
 
 import styles from './styles.module.css';
+import { routes } from '../../constants';
+
+export const orders = Array.from({ length: 10 }).fill().map((_, index) => {
+  const orderNumber = index + 1;
+  return {
+    Transaction_Id: `Transaction_${orderNumber}`,
+    User_Id: `User_${orderNumber}`,
+    User_Name: `Ngô Đức Minh Trí_${orderNumber}`,
+    User_Address: `TP.Hue_${orderNumber}`,
+    User_Email: `trindm@gmail.com_${orderNumber}`,
+    User_Phone: `0123456789_${orderNumber}`,
+    Payment: `0123456789_${orderNumber}`,
+    Status: 1,
+    Amount: 1000,
+    Shipping: `SHIPPING_${orderNumber}`,
+    Message: `MESSAGE_${orderNumber}`,
+    Security: `SECURITY_${orderNumber}`,
+    Product_Id: `Product_${orderNumber}`,
+    Create_At: `12/11/2021`,
+    Update_At: `12/11/2021`,
+
+    Details: Array.from({ length: 10 }).fill().map((_, detailIndex) => {
+      const detailNo = detailIndex + 1;
+      return {
+        Order_Id: detailNo,
+        Quantity: 10,
+        Price: 100,
+        ProductName: `Product name ${detailNo}`,
+      };
+    })
+  };
+});
 
 const OrderManagePage = () => {
+  const dispatch = useDispatch();
+
   const [state, setState] = React.useState({
-    orders: [
-      { Order_Id: 1, User_Id: 'A', Transaction_Id: 'A', Product_Id: 'A', Quanlity: 'A', Create_At: 'A', Update_At: 'A' },
-      { Order_Id: 2, User_Id: 'A', Transaction_Id: 'B', Product_Id: 'B', Quanlity: 'B', Create_At: 'B', Update_At: 'B' },
-      { Order_Id: 3, User_Id: 'A', Transaction_Id: 'C', Product_Id: 'C', Quanlity: 'C', Create_At: 'C', Update_At: 'C' },
-      { Order_Id: 4, User_Id: 'A', Transaction_Id: 'D', Product_Id: 'D', Quanlity: 'D', Create_At: 'D', Update_At: 'D' },
-      { Order_Id: 5, User_Id: 'A', Transaction_Id: 'E', Product_Id: 'E', Quanlity: 'E', Create_At: 'E', Update_At: 'E' },
-      { Order_Id: 6, User_Id: 'A', Transaction_Id: 'F', Product_Id: 'F', Quanlity: 'F', Create_At: 'F', Update_At: 'F' },
-      { Order_Id: 7, User_Id: 'A', Transaction_Id: 'G', Product_Id: 'G', Quanlity: 'G', Create_At: 'G', Update_At: 'G' },
-    ]
+    orders
   });
 
   const onClickRemove = React.useCallback((item) => () => {
@@ -38,15 +66,19 @@ const OrderManagePage = () => {
     });
   }, []);
 
+  const onClickDetail = React.useCallback((item) => () => {
+    dispatch(push(routes.ORDER_DETAIL(item.Transaction_Id).path));
+  }, [dispatch]);
+
   const onSearch = React.useCallback((text) => {
 
   }, []);
 
   const columns = [
     {
-      title: 'Order_Id',
-      dataIndex: 'Order_Id',
-      key: 'Order_Id',
+      title: 'Transaction_Id',
+      dataIndex: 'Transaction_Id',
+      key: 'Transaction_Id',
     },
     {
       title: 'User_Id',
@@ -54,19 +86,9 @@ const OrderManagePage = () => {
       key: 'User_Id',
     },
     {
-      title: 'Transaction_Id',
-      dataIndex: 'Transaction_Id',
-      key: 'Transaction_Id',
-    },
-    {
-      title: 'Product_Id',
-      dataIndex: 'Product_Id',
-      key: 'Product_Id',
-    },
-    {
-      title: 'Quanlity',
-      dataIndex: 'Quanlity',
-      key: 'Quanlity',
+      title: 'Amount',
+      dataIndex: 'Amount',
+      key: 'Amount',
     },
     {
       title: 'Create_At',
@@ -84,7 +106,7 @@ const OrderManagePage = () => {
       key: 'functions',
       render: (text, item) => (
         <div>
-          <Button type="primary" className={styles.buttonSeparator}>Chi tiết</Button>
+          <Button type="primary" className={styles.buttonSeparator} onClick={onClickDetail(item)}>Chi tiết</Button>
           <Button type="primary" danger onClick={onClickRemove(item)}>Xóa</Button>
         </div>
       )
@@ -102,8 +124,9 @@ const OrderManagePage = () => {
       </div>
 
       <Table
-        dataSource={state.orders}
         columns={columns}
+        dataSource={state.orders}
+        pagination={{ pageSize: 7 }}
       />
     </div>
   );

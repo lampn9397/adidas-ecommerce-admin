@@ -4,6 +4,7 @@ import { FaBox, FaUserCircle, FaDollarSign, FaShoppingCart } from 'react-icons/f
 import NotFound from '../pages/NotFound';
 import UserManagePage from '../pages/UserManagePage';
 import OrderManagePage from '../pages/OrderManagePage';
+import OrderDetailPage from '../pages/OrderDetailPage';
 
 export const routes = {
   HOME: {
@@ -17,8 +18,13 @@ export const routes = {
   },
   ORDERS: {
     path: '/orders',
+    exact: true,
     component: OrderManagePage
   },
+  ORDER_DETAIL: (orderId = ':orderId') => ({
+    path: `/orders/${orderId}`,
+    component: OrderDetailPage
+  }),
   NOT_FOUND: {
     path: '*',
     component: NotFound,
@@ -33,7 +39,7 @@ export const sideMenuItems = [
   },
   {
     title: 'Quản lý kho',
-    path: '/',
+    path: '/a',
     icon: <FaBox />,
   },
   {
@@ -43,7 +49,7 @@ export const sideMenuItems = [
   },
   {
     title: 'Quản lý doanh thu',
-    path: '/',
+    path: '/b',
     icon: <FaDollarSign />,
   },
 ];

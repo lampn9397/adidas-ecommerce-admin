@@ -89,8 +89,9 @@ const UserManagePage = () => {
       </div>
 
       <Table
-        dataSource={state.users}
         columns={columns}
+        dataSource={state.users}
+        pagination={{ pageSize: 7 }}
       />
     </div>
   );

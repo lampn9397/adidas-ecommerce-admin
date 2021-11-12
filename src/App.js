@@ -14,8 +14,8 @@ import styles from './App.module.css';
 import AppSideBar from './components/AppSideBar';
 
 import { history } from './redux/store';
-import { routes, sideMenuItems } from './constants';
 import * as ActionTypes from './redux/actionTypes';
+import { routes, sideMenuItems } from './constants';
 
 const { Content, Header } = Layout;
 
@@ -32,13 +32,21 @@ const App = () => {
     dispatch(push(item.path));
   }, [dispatch]);
 
-  const renderRouteItem = React.useCallback((key) => (
-    <Route
-      path={routes[key].path}
-      exact={routes[key].exact}
-      component={routes[key].component}
-    />
-  ), []);
+  const renderRouteItem = React.useCallback((key) => {
+    let route = routes[key];
+
+    if(typeof route === 'function') {
+      route = route();
+    }
+
+    return (
+      <Route
+        path={route.path}
+        exact={route.exact}
+        component={route.component}
+      />
+    )
+  }, []);
 
   return (
     <ConnectedRouter history={history}>
