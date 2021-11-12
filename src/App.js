@@ -17,6 +17,7 @@ import UserManagePage from './pages/UserManagePage';
 import { history } from './redux/store';
 import { sideMenuItems } from './constants';
 import * as ActionTypes from './redux/actionTypes';
+import OrderManagePage from './pages/OrderManagePage';
 
 const { Content, Header } = Layout;
 
@@ -52,7 +53,7 @@ const App = () => {
           </Header>
           <Content className={styles.content}>
             <Switch>
-              <Route path="/" component={UserManagePage} />
+              <Route path="/" component={OrderManagePage} />
             </Switch>
           </Content>
         </Layout>
