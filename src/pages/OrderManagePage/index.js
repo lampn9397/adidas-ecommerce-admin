@@ -125,6 +125,8 @@ const OrderManagePage = () => {
 
       <Table
         columns={columns}
+        tableLayout="fixed"
+        rowKey="Transaction_Id"
         dataSource={state.orders}
         pagination={{ pageSize: 7 }}
       />

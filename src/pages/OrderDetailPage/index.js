@@ -94,7 +94,9 @@ const OrderDetailPage = () => {
       </Card>
 
       <Table
+        rowKey="Order_Id"
         columns={columns}
+        tableLayout="fixed"
         dataSource={state.Details}
         pagination={{ pageSize: 5 }}
       />
