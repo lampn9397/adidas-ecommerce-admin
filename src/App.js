@@ -41,6 +41,7 @@ const App = () => {
 
     return (
       <Route
+        key={route.path}
         path={route.path}
         exact={route.exact}
         component={route.component}
