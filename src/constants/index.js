@@ -5,6 +5,8 @@ import NotFound from '../pages/NotFound';
 import UserManagePage from '../pages/UserManagePage';
 import OrderManagePage from '../pages/OrderManagePage';
 import OrderDetailPage from '../pages/OrderDetailPage';
+import ProductManagePage from '../pages/ProductManagePage';
+import ProductDetailPage from '../pages/ProductDetailPage';
 
 export const routes = {
   HOME: {
@@ -25,6 +27,15 @@ export const routes = {
     path: `/orders/${orderId}`,
     component: OrderDetailPage
   }),
+  PRODUCTS: {
+    path: '/products',
+    exact: true,
+    component: ProductManagePage
+  },
+  PRODUCT_DETAIL: (productId = ':productId') => ({
+    path: `/products/${productId}`,
+    component: ProductDetailPage
+  }),
   NOT_FOUND: {
     path: '*',
     component: NotFound,
@@ -39,7 +50,7 @@ export const sideMenuItems = [
   },
   {
     title: 'Quản lý kho',
-    path: '/a',
+    path: routes.PRODUCTS.path,
     icon: <FaBox />,
   },
   {
