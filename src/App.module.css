@@ -4,9 +4,9 @@
 }
 .header {
   padding: 0px;
+  background-color: white;
 }
 .toggleMenuIcon {
-  color: white;
   font-size: 24px;
   margin-left: 24px;
 }
