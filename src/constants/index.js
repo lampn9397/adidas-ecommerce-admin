@@ -7,6 +7,7 @@ import OrderManagePage from '../pages/OrderManagePage';
 import OrderDetailPage from '../pages/OrderDetailPage';
 import ProductManagePage from '../pages/ProductManagePage';
 import ProductDetailPage from '../pages/ProductDetailPage';
+import InComeManagePage from '../pages/IncomeManagePage';
 
 export const routes = {
   HOME: {
@@ -37,8 +38,8 @@ export const routes = {
     component: ProductDetailPage
   }),
   NOT_FOUND: {
-    path: '*',
-    component: NotFound,
+    path: '/income',
+    component: InComeManagePage,
   }
 };
 
@@ -60,7 +61,7 @@ export const sideMenuItems = [
   },
   {
     title: 'Quản lý doanh thu',
-    path: '/b',
+    path: '/income',
     icon: <FaDollarSign />,
   },
 ];
