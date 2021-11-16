@@ -1,20 +1,16 @@
 import React from 'react';
 import { Table, Button, Input, Modal } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.css';
+import * as ActionTypes from '../../redux/actionTypes';
 
 const UserManagePage = () => {
-  const [state, setState] = React.useState({
-    users: [
-      { id: 1, username: 'A', fullname: 'A', address: 'A', email: 'A' },
-      { id: 2, username: 'B', fullname: 'B', address: 'B', email: 'B' },
-      { id: 3, username: 'C', fullname: 'C', address: 'C', email: 'C' },
-      { id: 4, username: 'D', fullname: 'D', address: 'D', email: 'D' },
-      { id: 5, username: 'E', fullname: 'E', address: 'E', email: 'E' },
-      { id: 6, username: 'F', fullname: 'F', address: 'F', email: 'F' },
-      { id: 7, username: 'G', fullname: 'G', address: 'G', email: 'G' },
-    ]
-  });
+  const dispatch = useDispatch();
+
+  const loading = useSelector((state) => state.users.loading);
+
+  const users = useSelector((state) => state.users.userList);
 
   const onClickRemove = React.useCallback((item) => () => {
     Modal.confirm({
@@ -22,18 +18,18 @@ const UserManagePage = () => {
       okButtonProps: { danger: true },
       title: `Are you sure want to delete ${item.username}?`,
       onOk: () => {
-        setState((prevState) => {
-          const users = JSON.parse(JSON.stringify(prevState.users));
+        // setState((prevState) => {
+        //   const users = JSON.parse(JSON.stringify(prevState.users));
 
-          const itemIndex = users.findIndex((x) => x.id === item.id);
+        //   const itemIndex = users.findIndex((x) => x.id === item.id);
 
-          users.splice(itemIndex, 1);
+        //   users.splice(itemIndex, 1);
 
-          return {
-            ...prevState,
-            users,
-          }
-        });
+        //   return {
+        //     ...prevState,
+        //     users,
+        //   }
+        // });
       }
     });
   }, []);
@@ -43,23 +39,31 @@ const UserManagePage = () => {
   }, []);
 
   const columns = [
+    //     address: "null"
+    // created_at: null
+    // email: "customer"
+    // gender: 1
+    // id: 1
+    // name: "customer"
+    // phone: "null"
+    // updated_at: null
     {
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
     },
     {
-      title: 'Username',
-      dataIndex: 'username',
-      key: 'username',
+      title: 'Tên tài khoản',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: 'Fullname',
+      title: 'Họ Tên',
       dataIndex: 'fullname',
       key: 'fullname',
     },
     {
-      title: 'Address',
+      title: 'Địa chỉ',
       dataIndex: 'address',
       key: 'address',
     },
@@ -67,6 +71,11 @@ const UserManagePage = () => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'created_at',
+      key: 'created_at',
     },
     {
       title: 'Chức năng',
@@ -77,6 +86,10 @@ const UserManagePage = () => {
       )
     },
   ];
+
+  React.useEffect(() => {
+    dispatch({ type: ActionTypes.GET_USERS });
+  }, [dispatch]);
 
   return (
     <div className={styles.container}>
@@ -90,9 +103,10 @@ const UserManagePage = () => {
 
       <Table
         rowKey="id"
+        loading={loading}
         columns={columns}
         tableLayout="fixed"
-        dataSource={state.users}
+        dataSource={users}
         pagination={{ pageSize: 7 }}
       />
     </div>
