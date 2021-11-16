@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { put, takeLeading } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
