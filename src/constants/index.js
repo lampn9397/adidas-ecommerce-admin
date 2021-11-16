@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import { FaBox, FaUserCircle, FaDollarSign, FaShoppingCart } from 'react-icons/fa';
 
 import NotFound from '../pages/NotFound';
@@ -37,9 +38,13 @@ export const routes = {
     path: `/products/${productId}`,
     component: ProductDetailPage
   }),
-  NOT_FOUND: {
+  INCOME: {
     path: '/income',
     component: InComeManagePage,
+  },
+  NOT_FOUND: {
+    path: '*',
+    component: NotFound,
   }
 };
 
@@ -61,7 +66,7 @@ export const sideMenuItems = [
   },
   {
     title: 'Quản lý doanh thu',
-    path: '/income',
+    path: routes.INCOME.path,
     icon: <FaDollarSign />,
   },
 ];
@@ -69,3 +74,17 @@ export const sideMenuItems = [
 export const localStorageKey = {
   SIDEBAR_COLLAPSED: 'SIDEBAR_COLLAPSED',
 };
+
+export const responseStatus = {
+  OK: 'OK', // Success
+  NG: 'NG', // Failed
+};
+
+const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpLWFkbWluXC9sb2dpbiIsImlhdCI6MTYzNzA3NjQwMiwiZXhwIjoxNjM3MDgwMDAyLCJuYmYiOjE2MzcwNzY0MDIsImp0aSI6InpkQ0N5eFlQSkhQeDR1azUiLCJzdWIiOjEsInBydiI6ImMxYjhlZmJmODJlNjgzOWFlMzdkZTE4OTIzMWQxODE5NDUyY2RmZTkifQ.IPJlRBmqOsDnqPAZtpwYTF_71slPVN5N1g1QB8UQ-88';
+
+export const axiosClient = axios.create({
+  baseURL: 'http://127.0.0.1:8000/api-admin',
+  headers: {
+    Authorization: `Bearer ${token}`,
+  }
+});
