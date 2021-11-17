@@ -1,10 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Table, Button, Input, Modal } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.css';
 import { routes } from '../../constants';
+import * as ActionTypes from '../../redux/actionTypes';
 
 export const products = Array.from({ length: 10 }).fill().map((_, index) => {
   const productNumber = index + 1;
@@ -26,9 +27,17 @@ export const products = Array.from({ length: 10 }).fill().map((_, index) => {
 const ProductManagePage = () => {
   const dispatch = useDispatch();
 
-  const [state, setState] = React.useState({
-    products
-  });
+  const loading = useSelector((state) => state.products.loading);
+
+  // const users = useSelector((state) => state.users.userList);
+
+  const products = useSelector((state) => state.products.productList)
+
+  //  const orders = useSelector((state) => state.users.userLis);
+
+  // const [state, setState] = React.useState({
+  //   products
+  // });
 
   const onClickRemove = React.useCallback((item) => () => {
     Modal.confirm({
@@ -36,18 +45,18 @@ const ProductManagePage = () => {
       okButtonProps: { danger: true },
       title: `Are you sure want to delete product #${item.Id}?`,
       onOk: () => {
-        setState((prevState) => {
-          const products = JSON.parse(JSON.stringify(prevState.products));
+        // setState((prevState) => {
+        //   const users = JSON.parse(JSON.stringify(prevState.users));
 
-          const itemIndex = products.findIndex((x) => x.Id === item.Id);
+        //   const itemIndex = users.findIndex((x) => x.id === item.id);
 
-          products.splice(itemIndex, 1);
+        //   users.splice(itemIndex, 1);
 
-          return {
-            ...prevState,
-            products,
-          }
-        });
+        //   return {
+        //     ...prevState,
+        //     users,
+        //   }
+        // });
       }
     });
   }, []);
@@ -63,18 +72,18 @@ const ProductManagePage = () => {
   const columns = [
     {
       title: 'Id',
-      dataIndex: 'Id',
-      key: 'Id',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
       title: 'Name',
-      dataIndex: 'Name',
-      key: 'Name',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: 'Price',
-      dataIndex: 'Price',
-      key: 'Price',
+      dataIndex: 'price',
+      key: 'price',
     },
     {
       title: 'Description',
@@ -104,6 +113,10 @@ const ProductManagePage = () => {
     },
   ];
 
+  React.useEffect(() => {
+    dispatch({ type: ActionTypes.GET_PRODUCTS });
+  }, [dispatch]);
+
   return (
     <div className={styles.container}>
       <div className={styles.searchContainer}>
@@ -116,8 +129,9 @@ const ProductManagePage = () => {
 
       <Table
         rowKey="Id"
+        loading={loading}
         columns={columns}
-        dataSource={state.products}
+        dataSource={products}
         pagination={{ pageSize: 7 }}
       />
     </div>

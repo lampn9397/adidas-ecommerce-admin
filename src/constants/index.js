@@ -80,7 +80,7 @@ export const responseStatus = {
   NG: 'NG', // Failed
 };
 
-const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpLWFkbWluXC9sb2dpbiIsImlhdCI6MTYzNzA3NjQwMiwiZXhwIjoxNjM3MDgwMDAyLCJuYmYiOjE2MzcwNzY0MDIsImp0aSI6InpkQ0N5eFlQSkhQeDR1azUiLCJzdWIiOjEsInBydiI6ImMxYjhlZmJmODJlNjgzOWFlMzdkZTE4OTIzMWQxODE5NDUyY2RmZTkifQ.IPJlRBmqOsDnqPAZtpwYTF_71slPVN5N1g1QB8UQ-88';
+const token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpLWFkbWluXC9sb2dpbiIsImlhdCI6MTYzNzE1MjEzMywiZXhwIjoxNjM3MTU1NzMzLCJuYmYiOjE2MzcxNTIxMzMsImp0aSI6InJMVFRnTzNZNk1hUzVTWGUiLCJzdWIiOjEsInBydiI6ImMxYjhlZmJmODJlNjgzOWFlMzdkZTE4OTIzMWQxODE5NDUyY2RmZTkifQ.FJIdmVXCwpoyqbVNtGNxQEG3DZdcDuI3hT8MXdKHIrs';
 
 export const axiosClient = axios.create({
   baseURL: 'http://127.0.0.1:8000/api-admin',
