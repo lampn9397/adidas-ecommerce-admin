@@ -10,10 +10,16 @@ export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const LOGOUT = 'LOGOUT';
 export const LOGOUT_DONE = 'LOGOUT_DONE';
 
+// ---------- USERS
 export const GET_USERS = 'GET_USERS';
-export const GET_USERS_SUCCESS = 'GET_USER_SUCCESS';
-export const GET_USERS_FAILED = 'GET_USER_FAILED';
+export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
+export const GET_USERS_FAILED = 'GET_USERS_FAILED';
 
+export const DELETE_USER = 'DELETE_USER';
+export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS';
+export const DELETE_USER_FAILED = 'DELETE_USER_FAILED';
+
+// ---------- PRODUCT
 export const GET_PRODUCTS = 'GET_PRODUCTS';
 export const GET_PRODUCTS_SUCCESS = 'GET_PRODUCTS_SUCCESS';
 export const GET_PRODUCTS_FAILED = 'GET_PRODUCTS_FAILED';

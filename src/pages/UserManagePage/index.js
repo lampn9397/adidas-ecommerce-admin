@@ -12,27 +12,22 @@ const UserManagePage = () => {
 
   const users = useSelector((state) => state.users.userList);
 
+  const deleteLoading = useSelector((state) => state.users.deleteLoading);
+
+  const modalRef = React.useRef();
+
   const onClickRemove = React.useCallback((item) => () => {
-    Modal.confirm({
-      maskClosable: true,
+    const modal = Modal.confirm({
+      maskClosable: false,
       okButtonProps: { danger: true },
-      title: `Are you sure want to delete ${item.username}?`,
-      onOk: () => {
-        // setState((prevState) => {
-        //   const users = JSON.parse(JSON.stringify(prevState.users));
-
-        //   const itemIndex = users.findIndex((x) => x.id === item.id);
-
-        //   users.splice(itemIndex, 1);
-
-        //   return {
-        //     ...prevState,
-        //     users,
-        //   }
-        // });
-      }
+      title: `Bạn có chắc chắn muốn xóa tài khoản ${item.email}?`,
+      okText: 'Xác nhận',
+      cancelText: 'Hủy bỏ',
+      onOk: () => dispatch({ type: ActionTypes.DELETE_USER, payload: item })
     });
-  }, []);
+
+    modalRef.current = modal;
+  }, [dispatch]);
 
   const onSearch = React.useCallback((text) => {
 
@@ -53,7 +48,7 @@ const UserManagePage = () => {
       key: 'id',
     },
     {
-      title: 'Tên tài khoản',
+      title: 'Họ Tên',
       dataIndex: 'name',
       key: 'name',
     },
@@ -86,6 +81,24 @@ const UserManagePage = () => {
       )
     },
   ];
+
+  React.useEffect(() => {
+    if (!modalRef.current) return;
+  
+    if (deleteLoading) {
+      modalRef.current.update({
+        okButtonProps: {
+          loading: deleteLoading,
+          disabled: deleteLoading,
+        },
+        cancelButtonProps: {
+          disabled: deleteLoading
+        }
+      });
+    } else {
+      modalRef.current.destroy();
+    }
+  }, [deleteLoading]);
 
   React.useEffect(() => {
     dispatch({ type: ActionTypes.GET_USERS });
