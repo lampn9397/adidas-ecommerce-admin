@@ -1,8 +1,14 @@
 export const TOGGLE_SIDEBAR = 'TOGGLE_SIDEBAR';
 
+export const CHECK_LOGIN = 'CHECK_LOGIN';
+export const CHECK_LOGIN_DONE = 'CHECK_LOGIN_DONE';
+
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
+
+export const LOGOUT = 'LOGOUT';
+export const LOGOUT_DONE = 'LOGOUT_DONE';
 
 export const GET_USERS = 'GET_USERS';
 export const GET_USERS_SUCCESS = 'GET_USER_SUCCESS';

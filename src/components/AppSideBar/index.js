@@ -20,7 +20,7 @@ const AppSideBar = ({
 
   const renderMenuItem = React.useCallback((item) => (
     <Menu.Item
-      key={item.path}
+      key={item.path || item.action}
       icon={item.icon}
       onClick={onClickMenuItem(item)}
     >

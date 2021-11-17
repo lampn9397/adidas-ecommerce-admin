@@ -1,53 +1,96 @@
 import React from 'react';
-import { Layout } from 'antd';
+import { Layout, Spin } from 'antd';
 import { push } from 'connected-react-router';
-import { MenuOutlined } from '@ant-design/icons';
-import { Route, Switch } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ConnectedRouter } from 'connected-react-router';
+import { Route, Switch, Redirect } from 'react-router-dom';
+import { MenuOutlined, LoadingOutlined } from '@ant-design/icons';
 
 import 'antd/dist/antd.css';
 
-import './App.css';
-import styles from './App.module.css';
-
+import LoginPage from './pages/LoginPage';
 import AppSideBar from './components/AppSideBar';
 
+import './App.css';
+import styles from './App.module.css';
 import { history } from './redux/store';
 import * as ActionTypes from './redux/actionTypes';
 import { routes, sideMenuItems } from './constants';
 
 const { Content, Header } = Layout;
 
+const loadingIcon = <LoadingOutlined spin className={styles.loadingIcon} />;
+
 const App = () => {
   const dispatch = useDispatch();
 
+  const user = useSelector((state) => state.app.user);
+
+  const loading = useSelector((state) => state.app.loading);
+
   const collapsed = useSelector((state) => state.app.collapsed);
+
+  React.useEffect(() => {
+    dispatch({ type: ActionTypes.CHECK_LOGIN });
+  }, [dispatch])
 
   const onClickToggle = React.useCallback(() => {
     dispatch({ type: ActionTypes.TOGGLE_SIDEBAR });
   }, [dispatch]);
 
   const onClickMenuItem = React.useCallback((item) => {
+    if (item.action) {
+      dispatch({ type: item.action });
+      return;
+    }
+
     dispatch(push(item.path));
   }, [dispatch]);
 
   const renderRouteItem = React.useCallback((key) => {
     let route = routes[key];
 
-    if(typeof route === 'function') {
+    if (typeof route === 'function') {
       route = route();
+    }
+
+    const routeProps = {
+      key: key,
+      path: route.path,
+      exact: route.exact,
+    }
+
+    const isBuiltComponent = React.isValidElement(route.component);
+
+    if (isBuiltComponent) {
+      routeProps.children = route.component;
+    } else {
+      routeProps.component = route.component;
     }
 
     return (
       <Route
-        key={route.path}
-        path={route.path}
-        exact={route.exact}
-        component={route.component}
+        {...routeProps}
       />
     )
   }, []);
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <Spin indicator={loadingIcon} />
+      </div>
+    )
+  }
+
+  if (!user) {
+    return (
+      <ConnectedRouter history={history}>
+        <Redirect to="/" />
+        <LoginPage />
+      </ConnectedRouter>
+    )
+  }
 
   return (
     <ConnectedRouter history={history}>

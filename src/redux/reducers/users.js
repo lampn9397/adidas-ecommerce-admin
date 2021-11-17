@@ -23,6 +23,8 @@ export default function usersReducer(state = defaultState, action) {
         ...state,
         loading: false,
       }
+    case ActionTypes.LOGOUT_DONE:
+      return defaultState;
     default: return state;
   }
 }

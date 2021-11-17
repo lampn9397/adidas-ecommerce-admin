@@ -15,3 +15,12 @@
   min-height: calc(100vh - 64px);
   max-height: calc(100vh - 64px);
 }
+.loadingContainer {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.loadingIcon {
+  font-size: 64px;
+}
