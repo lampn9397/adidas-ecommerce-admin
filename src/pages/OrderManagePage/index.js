@@ -43,7 +43,7 @@ const OrderManagePage = () => {
 
   const loading = useSelector((state) => state.orders.loading);
 
-  const order = useSelector((state) => state.orders.productList)
+  const orders = useSelector((state) => state.orders.orderList)
 
   const onClickRemove = React.useCallback((item) => () => {
     Modal.confirm({
@@ -76,32 +76,48 @@ const OrderManagePage = () => {
   }, []);
 
   const columns = [
+//     created_at: null
+// id: 1
+// product: {id: 2, name: 'Giày Adidas Nam Adidas ZX 2K 4D “Triple Black” – Hàng Chính Hãng', category_id: 5, price: 2990000, description: 'MẪU GIÀY CHẠY BỘ TƯƠNG LẠI MANG ĐẬM DẤU ẤN HOÀI CỔ…đến dòng giày ZX lần đầu ra mắt vào thập niên 80.', …}
+// product_id: 2
+// quantity: 1
+// size: 40
+// transaction_id: 1
+// updated_at: null
     {
-      title: 'Transaction_Id',
-      dataIndex: 'id',
-      key: 'id',
+      title: 'Mã giao dịch',
+      dataIndex: 'transaction_id',
+      key: 'transaction_id',
+    },
+    // {
+    //   title: 'User_Id',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    // },
+    {
+      title: 'Tên sản phẩm',
+      dataIndex: ['product', 'name'],
+      // key: 'quantity',
     },
     {
-      // title: 'User_Id',
-      // dataIndex: 'id',
-      // key: 'id',
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
     },
     {
-      // title: 'Quantity',
-      // dataIndex: 'amount',
-      // key: 'amount',
+      width: 175,
+      title: 'Ngày tạo',
+      dataIndex: 'created_at',
+      key: 'created_At',
     },
     {
-      // title: 'Create_At',
-      // dataIndex: 'create_At',
-      // key: 'create_At',
+      width: 175,
+      title: 'Cập nhật cuối',
+      dataIndex: 'updated_at',
+      key: 'updated_at',
     },
     {
-      // title: 'Update_At',
-      // dataIndex: 'update_At',
-      // key: 'update_At',
-    },
-    {
+      width: 175,
       title: 'Chức năng',
       dataIndex: 'functions',
       key: 'functions',
@@ -115,7 +131,7 @@ const OrderManagePage = () => {
   ];
 
   React.useEffect(() => {
-    dispatch({ type: ActionTypes.GET_USERS });
+    dispatch({ type: ActionTypes.GET_ORDERS });
   }, [dispatch]);
 
   return (
@@ -133,7 +149,7 @@ const OrderManagePage = () => {
         loading={loading}
         columns={columns}
         // tableLayout="fixed"
-        dataSource={order}
+        dataSource={orders}
         pagination={{ pageSize: 7 }}
       />
     </div>
