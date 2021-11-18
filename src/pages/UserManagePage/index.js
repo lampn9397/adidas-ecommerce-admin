@@ -12,18 +12,28 @@ const UserManagePage = () => {
 
   const users = useSelector((state) => state.users.userList);
 
-  const deleteLoading = useSelector((state) => state.users.deleteLoading);
+  const blockLoading = useSelector((state) => state.users.blockLoading);
 
   const modalRef = React.useRef();
 
-  const onClickRemove = React.useCallback((item) => () => {
+  const onClickBlock = React.useCallback((item) => () => {
+    const isBlocked = !!item.deleted_at;
+
+    const blockColor = isBlocked ? 'green' : undefined;
+
     const modal = Modal.confirm({
       maskClosable: false,
-      okButtonProps: { danger: true },
-      title: `Bạn có chắc chắn muốn xóa tài khoản ${item.email}?`,
+      okButtonProps: {
+        danger: !isBlocked,
+        style: {
+          borderColor: blockColor,
+          backgroundColor: blockColor,
+        }
+      },
+      title: `Bạn có chắc chắn muốn ${isBlocked ? 'mở khóa' : 'khóa'} tài khoản ${item.email}?`,
       okText: 'Xác nhận',
       cancelText: 'Hủy bỏ',
-      onOk: () => dispatch({ type: ActionTypes.DELETE_USER, payload: item })
+      onOk: () => dispatch({ type: ActionTypes.BLOCK_USER, payload: item })
     });
 
     modalRef.current = modal;
@@ -53,11 +63,6 @@ const UserManagePage = () => {
       key: 'name',
     },
     {
-      title: 'Họ Tên',
-      dataIndex: 'fullname',
-      key: 'fullname',
-    },
-    {
       title: 'Địa chỉ',
       dataIndex: 'address',
       key: 'address',
@@ -73,32 +78,47 @@ const UserManagePage = () => {
       key: 'created_at',
     },
     {
+      width: 120,
       title: 'Chức năng',
       dataIndex: 'functions',
       key: 'functions',
-      render: (text, item) => (
-        <Button type="primary" danger onClick={onClickRemove(item)}>Xóa</Button>
-      )
+      render: (text, item) => {
+        const isBlocked = !!item.deleted_at;
+        const blockColor = isBlocked ? 'green' : undefined;
+        return (
+          <Button
+            type="primary"
+            danger={!isBlocked}
+            style={{
+              borderColor: blockColor,
+              backgroundColor: blockColor,
+            }}
+            onClick={onClickBlock(item)}
+          >
+            {isBlocked ? 'Mở khóa' : 'Khóa'}
+          </Button>
+        )
+      }
     },
   ];
 
   React.useEffect(() => {
     if (!modalRef.current) return;
-  
-    if (deleteLoading) {
+
+    if (blockLoading) {
       modalRef.current.update({
         okButtonProps: {
-          loading: deleteLoading,
-          disabled: deleteLoading,
+          loading: blockLoading,
+          disabled: blockLoading,
         },
         cancelButtonProps: {
-          disabled: deleteLoading
+          disabled: blockLoading
         }
       });
     } else {
       modalRef.current.destroy();
     }
-  }, [deleteLoading]);
+  }, [blockLoading]);
 
   React.useEffect(() => {
     dispatch({ type: ActionTypes.GET_USERS });

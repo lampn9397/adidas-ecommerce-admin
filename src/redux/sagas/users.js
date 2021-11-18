@@ -24,20 +24,30 @@ function* getUserAction() {
   alert(errorMessage);
 }
 
-function* deleteUserAction(action) {
+function* blockUserAction(action) {
   let errorMessage = '';
 
   try {
-    const { id } = action.payload;
+    const { id, deleted_at } = action.payload;
 
-    const { data } = yield axiosClient.delete('/user', {
-      data: {
-        ids: [id]
-      }
-    });
+    let methodName = 'delete';
+
+    let url = '/user';
+
+    let params = {
+      data: { ids: [id] }
+    }
+
+    if (deleted_at) {
+      url = '/user/restore-users';
+      methodName = 'post';
+      params = { ids: [id] }
+    }
+
+    const { data } = yield axiosClient[methodName](url, params);
 
     if (data.status === responseStatus.OK) {
-      yield put({ type: ActionTypes.DELETE_USER_SUCCESS, payload: action.payload });
+      yield put({ type: ActionTypes.BLOCK_USER_SUCCESS, payload: action.payload });
       return;
     }
 
@@ -46,12 +56,12 @@ function* deleteUserAction(action) {
     errorMessage = error.message;
   }
 
-  yield put({ type: ActionTypes.DELETE_USER_FAILED });
+  yield put({ type: ActionTypes.BLOCK_USER_FAILED });
 
   alert(errorMessage);
 }
 
 export default function* appSaga() {
   yield takeLeading(ActionTypes.GET_USERS, getUserAction);
-  yield takeLeading(ActionTypes.DELETE_USER, deleteUserAction);
+  yield takeLeading(ActionTypes.BLOCK_USER, blockUserAction);
 }

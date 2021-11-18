@@ -3,7 +3,7 @@ import * as ActionTypes from '../actionTypes';
 const defaultState = {
   userList: [],
   loading: true,
-  deleteLoading: false,
+  blockLoading: false,
 };
 
 export default function usersReducer(state = defaultState, action) {
@@ -24,30 +24,32 @@ export default function usersReducer(state = defaultState, action) {
         ...state,
         loading: false,
       }
-    case ActionTypes.DELETE_USER:
+    case ActionTypes.BLOCK_USER:
       return {
         ...state,
-        deleteLoading: true,
+        blockLoading: true,
       }
-    case ActionTypes.DELETE_USER_SUCCESS: {
+    case ActionTypes.BLOCK_USER_SUCCESS: {
       const userList = JSON.parse(JSON.stringify(state.userList));
 
       const userIndex = userList.findIndex((x) => x.id === action.payload.id);
 
       if (userIndex > -1) {
-        userList.splice(userIndex, 1);
+        const nextDeletedAtValue = action.payload.deleted_at ? null : new Date()
+
+        userList[userIndex].deleted_at = nextDeletedAtValue;
       }
 
       return {
         ...state,
         userList,
-        deleteLoading: false,
+        blockLoading: false,
       }
     }
-    case ActionTypes.DELETE_USER_FAILED:
+    case ActionTypes.BLOCK_USER_FAILED:
       return {
         ...state,
-        deleteLoading: false,
+        blockLoading: false,
       }
     case ActionTypes.LOGOUT_DONE:
       return defaultState;
