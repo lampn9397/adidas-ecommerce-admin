@@ -1,9 +1,13 @@
 import React from 'react';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { Table, Button, Input, Modal } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.css';
 import * as ActionTypes from '../../redux/actionTypes';
+
+dayjs.extend(utc)
 
 const UserManagePage = () => {
   const dispatch = useDispatch();
@@ -44,15 +48,8 @@ const UserManagePage = () => {
   }, []);
 
   const columns = [
-    //     address: "null"
-    // created_at: null
-    // email: "customer"
-    // gender: 1
-    // id: 1
-    // name: "customer"
-    // phone: "null"
-    // updated_at: null
     {
+      width: 70,
       title: 'Id',
       dataIndex: 'id',
       key: 'id',
@@ -73,9 +70,11 @@ const UserManagePage = () => {
       key: 'email',
     },
     {
+      width: 175,
       title: 'Ngày tạo',
       dataIndex: 'created_at',
       key: 'created_at',
+      render: (text) => dayjs.utc(text || undefined).format('HH:mm DD/MM/YYYY')
     },
     {
       width: 120,

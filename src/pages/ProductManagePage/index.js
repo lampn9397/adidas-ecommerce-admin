@@ -1,28 +1,14 @@
 import React from 'react';
-import { push } from 'connected-react-router';
-import { Table, Button, Input, Modal } from 'antd';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { Table, Button, Input, Modal, Image } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.css';
-import { routes } from '../../constants';
+import { formatCurrency } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
 
-export const products = Array.from({ length: 10 }).fill().map((_, index) => {
-  const productNumber = index + 1;
-  return {
-    Id: `${productNumber}`,
-    Name: `Product #${productNumber}`,
-    Price: 1000,
-    Description: `Product #${productNumber} description`,
-    Image: `Product #${productNumber} image`,
-    CreatedAt: '20:32 15/11/2021',
-    Sizes: [
-      { Id: 1, Size: 41, Quantity: 10, CreatedAt: '20:32 15/11/2021' },
-      { Id: 2, Size: 42, Quantity: 10, CreatedAt: '20:32 16/11/2021' },
-      { Id: 3, Size: 43, Quantity: 10, CreatedAt: '20:32 17/11/2021' },
-    ]
-  };
-});
+dayjs.extend(utc)
 
 const ProductManagePage = () => {
   const dispatch = useDispatch();
@@ -39,17 +25,18 @@ const ProductManagePage = () => {
     const modal = Modal.confirm({
       maskClosable: false,
       okButtonProps: { danger: true },
-      title: `Bạn có chắc chắn muốn xóa tài khoản ${item.email}?`,
+      title: `Bạn có chắc chắn muốn xóa sản phẩm ${item.name}?`,
       okText: 'Xác nhận',
       cancelText: 'Hủy bỏ',
-      onOk: () => dispatch({ type: ActionTypes.DELETE_PRODUCTS, payload: item })
+      onOk: () => dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: item })
     });
 
     modalRef.current = modal;
   }, [dispatch]);
 
   const onClickEdit = React.useCallback((item) => () => {
-    dispatch(push(routes.PRODUCT_DETAIL(item.Id).path));
+    // dispatch(push(routes.PRODUCT_DETAIL(item.Id).path));
+    dispatch({ type: ActionTypes.SELECT_PRODUCT, payload: item });
   }, [dispatch]);
 
   const onSearch = React.useCallback((text) => {
@@ -68,26 +55,32 @@ const ProductManagePage = () => {
       key: 'name',
     },
     {
+      width: 200,
       title: 'Giá',
       dataIndex: 'price',
       key: 'price',
+      render: (text) => formatCurrency(`${text} VNĐ`)
     },
-    {
-      title: 'Mô tả',
-      dataIndex: 'Description',
-      key: 'Description',
-    },
+    // {
+    //   title: 'Mô tả',
+    //   dataIndex: 'Description',
+    //   key: 'Description',
+    // },
     {
       title: 'Hình ảnh',
-      dataIndex: 'Image',
-      key: 'Image',
+      dataIndex: 'image',
+      key: 'image',
+      render: (imageSource) => <Image src={imageSource} width={100} />
     },
     {
+      width: 175,
       title: 'Ngày tạo',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      render: (text) => dayjs.utc(text || undefined).format('HH:mm DD/MM/YYYY')
     },
     {
+      width: 200,
       title: 'Chức năng',
       dataIndex: 'functions',
       key: 'functions',

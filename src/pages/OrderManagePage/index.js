@@ -1,11 +1,14 @@
 import React from 'react';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
 import { Table, Button, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.css';
 import { formatCurrency } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
+
+dayjs.extend(utc)
 
 const OrderManagePage = () => {
   const dispatch = useDispatch();
@@ -61,7 +64,7 @@ const OrderManagePage = () => {
       title: 'Ngày tạo',
       dataIndex: 'created_at',
       key: 'created_at',
-      render: (text) => dayjs(text || undefined).format('HH:mm DD/MM/YYYY')
+      render: (text) => dayjs.utc(text || undefined).format('HH:mm DD/MM/YYYY')
     },
     // {
     //   width: 175,

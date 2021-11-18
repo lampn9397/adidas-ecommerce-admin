@@ -38,10 +38,10 @@ export const routes = {
     exact: true,
     component: ProductManagePage
   },
-  PRODUCT_DETAIL: (productId = ':productId') => ({
-    path: `/products/${productId}`,
+  PRODUCT_DETAIL: {
+    path: '/products/detail',
     component: ProductDetailPage
-  }),
+  },
   INCOME: {
     path: '/income',
     component: InComeManagePage,

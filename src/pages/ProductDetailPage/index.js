@@ -1,13 +1,18 @@
 import React from 'react';
-import { useParams } from 'react-router';
 import {
   Card,
   Form,
   Modal,
   Table,
+  Input,
   Button,
+  Upload,
   InputNumber,
 } from 'antd';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+
+import { Redirect } from 'react-router-dom';
 import { FaTrashAlt } from 'react-icons/fa';
 
 import AppInput from '../../components/AppInput';
@@ -15,26 +20,17 @@ import EditableCell from '../../components/EditableCell';
 
 import styles from './styles.module.css';
 import { formatCurrency } from '../../utils';
-import { products } from '../ProductManagePage';
+import { useSelector } from 'react-redux';
+import { routes } from '../../constants';
 
+dayjs.extend(utc)
 
 const ProductDetailPage = () => {
-  const params = useParams();
+  const selectedProduct = useSelector((state) => state.products.selectedProduct);
 
-  console.log('params > ', params);
-
-  const [state, setState] = React.useState(() => {
-    const product = products.find((x) => x.Id === params.productId);
-
-    return {
-      Id: product.Id,
-      Name: product.Name,
-      Price: product.Price,
-      Description: product.Description,
-      Image: product.Image,
-      CreatedAt: product.CreatedAt,
-      Sizes: product.Sizes,
-    }
+  const [state, setState] = React.useState({
+    fileList: [],
+    selectedProduct: JSON.parse(JSON.stringify(selectedProduct))
   });
 
   // const onChange = React.useCallback((fieldName) => (e) => {
@@ -55,7 +51,7 @@ const ProductDetailPage = () => {
       title: `Are you sure want to delete product #${item.Id}?`,
       onOk: () => {
         setState((prevState) => {
-          const products = JSON.parse(JSON.stringify(prevState.products));
+          const products = JSON.parse(JSON.stringify(prevState.selectedProduct.products));
 
           const itemIndex = products.findIndex((x) => x.Id === item.Id);
 
@@ -73,42 +69,38 @@ const ProductDetailPage = () => {
   const onClickUpdateSize = React.useCallback((item) => () => {
   }, []);
 
-  const columns = [
+  const productDetailColumns = [
     {
       title: 'Id',
-      dataIndex: 'Id',
-      key: 'Id',
+      dataIndex: 'id',
     },
     {
       title: 'Kích cỡ',
-      dataIndex: 'Size',
-      key: 'Size',
+      dataIndex: 'size',
     },
     {
       title: 'Số lượng',
-      dataIndex: 'Quantity',
-      key: 'Quantity',
+      dataIndex: 'quantity',
       editable: true,
     },
     {
       title: 'Ngày tạo',
-      dataIndex: 'CreatedAt',
-      key: 'CreatedAt',
+      dataIndex: 'created_at',
+      render: (text) => dayjs.utc(text || undefined).format('HH:mm DD/MM/YYYY')
     },
     {
       title: 'Chức năng',
-      dataIndex: 'functions',
       key: 'functions',
       render: (text, item) => (
-        <>
+        <div>
           <Button type="primary" className={styles.buttonSeparator} onClick={onClickUpdateSize(item)}>Cập nhật</Button>
           <Button type="primary" danger onClick={onClickRemoveSize(item)}>Xóa</Button>
-        </>
+        </div>
       )
     },
   ];
 
-  const mergedColumns = columns.map((col) => {
+  const mergedColumns = productDetailColumns.map((col) => {
     if (!col.editable) return col;
 
     return {
@@ -140,14 +132,27 @@ const ProductDetailPage = () => {
     </Form.Item>
   ), []);
 
+  const onBeforeUpload = React.useCallback((file) => {
+    console.log('onUploadChange > ', file);
+    // setState(prevState => ({
+    //   fileList: [...prevState.fileList, file],
+    // }));
+    return false;
+
+  }, []);
+
+  const onUploadChange = React.useCallback((e) => {
+    console.log('onUploadChange > ', e);
+  }, []);
+
   const formItems = React.useMemo(() => [
     {
-      name: 'Name',
+      name: 'name',
       label: 'Tên sản phẩm',
       rules: [{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]
     },
     {
-      name: 'Price',
+      name: 'price',
       label: 'Giá sản phẩm',
       rules: [
         { required: true, message: 'Vui lòng nhập giá sản phẩm!' },
@@ -165,14 +170,30 @@ const ProductDetailPage = () => {
       )
     },
     {
-      name: 'Image',
+      name: 'image',
       label: 'Hình ảnh',
-      rules: [{ required: true, message: 'Vui lòng nhập hình ảnh!' }]
+      // rules: [{ required: true, message: 'Vui lòng nhập hình ảnh!' }]
+      component: (
+        <Upload
+          name="avatar"
+          accept="image/*"
+          showUploadList={false}
+          listType="picture-card"
+          className="avatar-uploader"
+          onChange={onUploadChange}
+          beforeUpload={onBeforeUpload}
+        >
+          <img src={state.selectedProduct.image} alt="avatar" style={{ width: '100%' }} />
+        </Upload>
+      )
     },
     {
-      name: 'Description',
+      name: 'description',
       label: 'Mô tả',
-      rules: [{ max: 300, message: 'Mô tả quá dài!' }]
+      rules: [{ max: 300, message: 'Mô tả quá dài!' }],
+      component: (
+        <Input.TextArea rows={8} />
+      )
     },
     {
       wrapperCol: {
@@ -185,7 +206,7 @@ const ProductDetailPage = () => {
         </Button>
       )
     },
-  ], []);
+  ], [onBeforeUpload, onUploadChange, state.selectedProduct.image]);
 
   const onSizeTableFormFinish = React.useCallback((values) => {
     console.log("🚀 ~ file: index.js ~ line 186 ~ onSizeTableFormFinish ~ values", values)
@@ -195,25 +216,28 @@ const ProductDetailPage = () => {
     Modal.confirm({
       maskClosable: true,
       okButtonProps: { danger: true },
-      title: `Are you sure want to delete product ${state.Name}?`,
+      title: `Are you sure want to delete product ${state.selectedProduct.name}?`,
       onOk: () => {
 
       }
     });
-  }, [state.Name]);
+  }, [state.selectedProduct.name]);
+
+  if (!selectedProduct) {
+    return <Redirect to={routes.PRODUCTS.path} />;
+  }
 
   return (
     <div className={styles.container}>
       <Card
-        title={`Sản phẩm: ${state.Name}`}
-        extra={<Button danger icon={<FaTrashAlt />} />}
-        onClick={onClickRemoveProduct}
+        title={`Sản phẩm: ${state.selectedProduct.name}`}
+        extra={<Button danger icon={<FaTrashAlt />} onClick={onClickRemoveProduct} />}
       >
         <Form
           name="product-form"
           labelCol={{ span: 3 }}
           wrapperCol={{ span: 10 }}
-          initialValues={state}
+          initialValues={state.selectedProduct}
           onFinish={onFinish}
           // onFinishFailed={onFinishFailed}
           autoComplete="off"
@@ -228,7 +252,7 @@ const ProductDetailPage = () => {
           onFinish={onSizeTableFormFinish}
           // onFinishFailed={onFinishFailed}
           autoComplete="off"
-          initialValues={state.Sizes}
+          initialValues={state.selectedProduct.detail_products}
         >
           <Table
             rowKey="Id"
@@ -239,7 +263,7 @@ const ProductDetailPage = () => {
               },
             }}
             tableLayout="fixed"
-            dataSource={state.Sizes}
+            dataSource={state.selectedProduct.detail_products}
             pagination={{ pageSize: 5 }}
           />
         </Form>
