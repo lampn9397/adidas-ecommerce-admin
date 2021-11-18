@@ -76,27 +76,27 @@ const ProductManagePage = () => {
       key: 'id',
     },
     {
-      title: 'Name',
+      title: 'Tên sản phẩm',
       dataIndex: 'name',
       key: 'name',
     },
     {
-      title: 'Price',
+      title: 'Giá',
       dataIndex: 'price',
       key: 'price',
     },
     {
-      title: 'Description',
+      title: 'Mô tả',
       dataIndex: 'Description',
       key: 'Description',
     },
     {
-      title: 'Image',
+      title: 'Hình ảnh',
       dataIndex: 'Image',
       key: 'Image',
     },
     {
-      title: 'CreatedAt',
+      title: 'Ngày tạo',
       dataIndex: 'CreatedAt',
       key: 'CreatedAt',
     },
