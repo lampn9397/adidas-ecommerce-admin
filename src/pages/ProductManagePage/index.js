@@ -29,37 +29,24 @@ const ProductManagePage = () => {
 
   const loading = useSelector((state) => state.products.loading);
 
-  // const users = useSelector((state) => state.users.userList);
-
   const products = useSelector((state) => state.products.productList)
 
-  //  const orders = useSelector((state) => state.users.userLis);
+  const deleteLoading = useSelector((state) => state.products.deleteLoading);
 
-  // const [state, setState] = React.useState({
-  //   products
-  // });
+  const modalRef = React.useRef();
 
   const onClickRemove = React.useCallback((item) => () => {
-    Modal.confirm({
-      maskClosable: true,
+    const modal = Modal.confirm({
+      maskClosable: false,
       okButtonProps: { danger: true },
-      title: `Are you sure want to delete product #${item.Id}?`,
-      onOk: () => {
-        // setState((prevState) => {
-        //   const users = JSON.parse(JSON.stringify(prevState.users));
-
-        //   const itemIndex = users.findIndex((x) => x.id === item.id);
-
-        //   users.splice(itemIndex, 1);
-
-        //   return {
-        //     ...prevState,
-        //     users,
-        //   }
-        // });
-      }
+      title: `Bạn có chắc chắn muốn xóa tài khoản ${item.email}?`,
+      okText: 'Xác nhận',
+      cancelText: 'Hủy bỏ',
+      onOk: () => dispatch({ type: ActionTypes.DELETE_PRODUCTS, payload: item })
     });
-  }, []);
+
+    modalRef.current = modal;
+  }, [dispatch]);
 
   const onClickEdit = React.useCallback((item) => () => {
     dispatch(push(routes.PRODUCT_DETAIL(item.Id).path));
@@ -112,6 +99,24 @@ const ProductManagePage = () => {
       )
     },
   ];
+
+  React.useEffect(() => {
+    if (!modalRef.current) return;
+  
+    if (deleteLoading) {
+      modalRef.current.update({
+        okButtonProps: {
+          loading: deleteLoading,
+          disabled: deleteLoading,
+        },
+        cancelButtonProps: {
+          disabled: deleteLoading
+        }
+      });
+    } else {
+      modalRef.current.destroy();
+    }
+  }, [deleteLoading]);
 
   React.useEffect(() => {
     dispatch({ type: ActionTypes.GET_PRODUCTS });
