@@ -1,27 +1,33 @@
 import * as ActionTypes from '../actionTypes';
 
 const defaultState = {
-  orderList: [],
+  transactionList: [],
   loading: true,
+  selectedTransaction: null,
 };
 
 export default function ordersReducer(state = defaultState, action) {
   switch (action.type) {
-    case ActionTypes.GET_ORDERS:
+    case ActionTypes.GET_TRANSACTIONS:
       return {
         ...state,
         loading: true,
       }
-    case ActionTypes.GET_ORDERS_SUCCESS:
+    case ActionTypes.GET_TRANSACTIONS_SUCCESS:
       return {
         ...state,
         loading: false,
-        orderList: action.payload,
+        transactionList: action.payload,
       }
-    case ActionTypes.GET_ORDERS_FAILED:
+    case ActionTypes.GET_TRANSACTIONS_FAILED:
       return {
         ...state,
         loading: false,
+      }
+    case ActionTypes.SELECT_TRANSACTION:
+      return {
+        ...state,
+        selectedTransaction: action.payload,
       }
     case ActionTypes.LOGOUT_DONE:
       return defaultState;

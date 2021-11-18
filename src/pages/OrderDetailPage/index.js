@@ -1,103 +1,65 @@
 import React from 'react';
-import { useParams } from 'react-router';
-import {
-  Card,
-  Table,
-  // Button,
-} from 'antd';
-
-// import AppInput from '../../components/AppInput';
+import { Card, Table } from 'antd';
+import { useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
 import styles from './styles.module.css';
-import { orders } from '../OrderManagePage';
+import { routes } from '../../constants';
+import { formatCurrency } from '../../utils';
 
 const OrderDetailPage = () => {
-  const params = useParams();
+  const selectedTransaction = useSelector((state) => state.transactions.selectedTransaction);
 
-  console.log('params > ', params);
-
-  const [state, setState] = React.useState(() => {
-    const order = orders.find((x) => x.Transaction_Id === params.orderId);
-
-    return {
-      Transaction_Id: order.Transaction_Id,
-      User_Id: order.User_Id,
-      User_Name: order.User_Name,
-      User_Address: order.User_Address,
-      User_Email: order.User_Email,
-      User_Phone: order.User_Phone,
-      Payment: order.Payment,
-      Status: order.Status,
-      Amount: order.Amount,
-      Shipping: order.Shipping,
-      Message: order.Message,
-      Security: order.Security,
-      Product_Id: order.Product_Id,
-      Create_At: order.Create_At,
-      Update_At: order.Update_At,
-
-      Order_Id: order.Order_Id,
-      // Quantity: order.Quantity,
-
-      Details: order.Details,
-    }
-  });
-
-  // const onChange = React.useCallback((fieldName) => (e) => {
-  //   setState((prevState) => ({
-  //     ...prevState,
-  //     [fieldName]: e.target.value,
-  //   }));
-  // }, []);
-
-  // const onSubmit = React.useCallback(() => {
-
-  // }, []);
+  if(!selectedTransaction) {
+    return <Redirect to={routes.ORDERS.path} />;
+  }
 
   const columns = [
     {
-      title: 'Order_Id',
-      dataIndex: 'Order_Id',
-      key: 'Order_Id',
+      width: 100,
+      title: 'Id',
+      dataIndex: 'id',
     },
     {
       title: 'Tên sản phẩm',
-      dataIndex: 'ProductName',
-      key: 'ProductName',
+      dataIndex: ['product', 'name'],
     },
     {
-      title: 'Giá',
-      dataIndex: 'Price',
-      key: 'Price',
+      width: 100,
+      title: 'Size',
+      dataIndex: 'size',
     },
     {
+      width: 100,
       title: 'Số lượng',
-      dataIndex: 'Quantity',
-      key: 'Quantity',
+      dataIndex: 'quantity',
     },
     {
-      title: 'Tổng tiền',
-      dataIndex: 'Quantity',
-      key: 'Quantity',
-      render: (text, item) => item.Price * item.Quantity
+      width: 200,
+      title: 'Giá',
+      dataIndex: ['product', 'price'],
+      render: (text) => formatCurrency(`${text} VNĐ`)
     },
   ];
 
   return (
     <div className={styles.container}>
-      <Card title="Chi tiết đơn hàng">
-        <p>Mã đơn hàng: #{state.Transaction_Id}</p>
-        <p>Tên khách hàng: {state.User_Name}</p>
-        <p>Địa chỉ: {state.User_Address}</p>
-        <p>Số điện thoại: {state.User_Phone}</p>
-        <p>Email: {state.User_Email}</p>
+      <Card title="Chi tiết đơn hàng" className={styles.customerDetailCard}>
+        <p>Mã đơn hàng: #{selectedTransaction.id}</p>
+        <p>Tên khách hàng: {selectedTransaction.user_name}</p>
+        <p>Địa chỉ: {selectedTransaction.user_address}</p>
+        <p>Số điện thoại: {selectedTransaction.user_phone}</p>
+        <p>Email: {selectedTransaction.user_email}</p>
+        <p>Tổng tiền: {formatCurrency(`${selectedTransaction.amount} VNĐ`)}</p>
+        <p>Phương thức thanh toán: {selectedTransaction.payment}</p>
+        <p>Giao hàng: {selectedTransaction.shipping}</p>
       </Card>
 
       <Table
-        rowKey="Order_Id"
+        rowKey="id"
         columns={columns}
         tableLayout="fixed"
-        dataSource={state.Details}
+        dataSource={selectedTransaction.orders}
         pagination={{ pageSize: 5 }}
       />
 

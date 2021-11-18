@@ -11,10 +11,12 @@ import {
 import { FaTrashAlt } from 'react-icons/fa';
 
 import AppInput from '../../components/AppInput';
+import EditableCell from '../../components/EditableCell';
 
 import styles from './styles.module.css';
+import { formatCurrency } from '../../utils';
 import { products } from '../ProductManagePage';
-import EditableCell from '../../components/EditableCell';
+
 
 const ProductDetailPage = () => {
   const params = useParams();
@@ -159,7 +161,7 @@ const ProductDetailPage = () => {
             // const valueWithoutSeparator = valueWithoutCurrency.replace(/,/g, '').trim();
             return value.replace(/\D/g, '').trim();
           }}
-          formatter={(value) => `${value} VNĐ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
+          formatter={(value) => formatCurrency(`${value} VNĐ`)} />
       )
     },
     {

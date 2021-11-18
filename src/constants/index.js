@@ -29,10 +29,10 @@ export const routes = {
     exact: true,
     component: OrderManagePage
   },
-  ORDER_DETAIL: (orderId = ':orderId') => ({
-    path: `/orders/${orderId}`,
+  ORDER_DETAIL: {
+    path: '/orders/detail',
     component: OrderDetailPage
-  }),
+  },
   PRODUCTS: {
     path: '/products',
     exact: true,
