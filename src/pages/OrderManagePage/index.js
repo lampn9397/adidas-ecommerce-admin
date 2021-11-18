@@ -1,10 +1,11 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import { Table, Button, Input, Modal } from 'antd';
 
 import styles from './styles.module.css';
 import { routes } from '../../constants';
+import * as ActionTypes from '../../redux/actionTypes';
 
 export const orders = Array.from({ length: 10 }).fill().map((_, index) => {
   const orderNumber = index + 1;
@@ -40,28 +41,28 @@ export const orders = Array.from({ length: 10 }).fill().map((_, index) => {
 const OrderManagePage = () => {
   const dispatch = useDispatch();
 
-  const [state, setState] = React.useState({
-    orders
-  });
+  const loading = useSelector((state) => state.orders.loading);
+
+  const order = useSelector((state) => state.orders.productList)
 
   const onClickRemove = React.useCallback((item) => () => {
     Modal.confirm({
       maskClosable: true,
       okButtonProps: { danger: true },
-      title: `Are you sure want to delete order #${item.Order_Id}?`,
+      title: `Are you sure want to delete product #${item.Id}?`,
       onOk: () => {
-        setState((prevState) => {
-          const orders = JSON.parse(JSON.stringify(prevState.orders));
+        // setState((prevState) => {
+        //   const users = JSON.parse(JSON.stringify(prevState.users));
 
-          const itemIndex = orders.findIndex((x) => x.Order_Id === item.Order_Id);
+        //   const itemIndex = users.findIndex((x) => x.id === item.id);
 
-          orders.splice(itemIndex, 1);
+        //   users.splice(itemIndex, 1);
 
-          return {
-            ...prevState,
-            orders,
-          }
-        });
+        //   return {
+        //     ...prevState,
+        //     users,
+        //   }
+        // });
       }
     });
   }, []);
@@ -77,28 +78,28 @@ const OrderManagePage = () => {
   const columns = [
     {
       title: 'Transaction_Id',
-      dataIndex: 'Transaction_Id',
-      key: 'Transaction_Id',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
-      title: 'User_Id',
-      dataIndex: 'User_Id',
-      key: 'User_Id',
+      // title: 'User_Id',
+      // dataIndex: 'id',
+      // key: 'id',
     },
     {
-      title: 'Amount',
-      dataIndex: 'Amount',
-      key: 'Amount',
+      // title: 'Quantity',
+      // dataIndex: 'amount',
+      // key: 'amount',
     },
     {
-      title: 'Create_At',
-      dataIndex: 'Create_At',
-      key: 'Create_At',
+      // title: 'Create_At',
+      // dataIndex: 'create_At',
+      // key: 'create_At',
     },
     {
-      title: 'Update_At',
-      dataIndex: 'Update_At',
-      key: 'Update_At',
+      // title: 'Update_At',
+      // dataIndex: 'update_At',
+      // key: 'update_At',
     },
     {
       title: 'Chức năng',
@@ -113,6 +114,10 @@ const OrderManagePage = () => {
     },
   ];
 
+  React.useEffect(() => {
+    dispatch({ type: ActionTypes.GET_USERS });
+  }, [dispatch]);
+
   return (
     <div className={styles.container}>
       <div className={styles.searchContainer}>
@@ -124,10 +129,11 @@ const OrderManagePage = () => {
       </div>
 
       <Table
-        columns={columns}
-        tableLayout="fixed"
         rowKey="Transaction_Id"
-        dataSource={state.orders}
+        loading={loading}
+        columns={columns}
+        // tableLayout="fixed"
+        dataSource={order}
         pagination={{ pageSize: 7 }}
       />
     </div>
