@@ -11,21 +11,24 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-
 import { Redirect } from 'react-router-dom';
 import { FaTrashAlt } from 'react-icons/fa';
+import { useDispatch, useSelector } from 'react-redux';
+
 
 import AppInput from '../../components/AppInput';
 import EditableCell from '../../components/EditableCell';
 
 import styles from './styles.module.css';
-import { formatCurrency } from '../../utils';
-import { useSelector } from 'react-redux';
 import { routes } from '../../constants';
+import { formatCurrency } from '../../utils';
+import * as ActionTypes from '../../redux/actionTypes';
 
 dayjs.extend(utc)
 
 const ProductDetailPage = () => {
+  const dispatch = useDispatch();
+
   const selectedProduct = useSelector((state) => state.products.selectedProduct);
 
   const [state, setState] = React.useState({
@@ -117,8 +120,10 @@ const ProductDetailPage = () => {
 
 
   const onFinish = React.useCallback((values) => {
-    setState((prevState) => ({ ...prevState, ...values }))
-  }, []);
+    console.log('values > ', values);
+    // setState((prevState) => ({ ...prevState, ...values }))
+    dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: values });
+  }, [dispatch]);
 
   const renderFormItem = React.useCallback((item) => (
     <Form.Item
@@ -175,22 +180,21 @@ const ProductDetailPage = () => {
       // rules: [{ required: true, message: 'Vui lòng nhập hình ảnh!' }]
       component: (
         <Upload
-          name="avatar"
           accept="image/*"
           showUploadList={false}
-          listType="picture-card"
-          className="avatar-uploader"
+          listType="picture"
+          className={styles.uploadButton}
           onChange={onUploadChange}
           beforeUpload={onBeforeUpload}
         >
-          <img src={state.selectedProduct.image} alt="avatar" style={{ width: '100%' }} />
+          <img src={state.selectedProduct.image} alt="avatar" className={styles.uploadImage} />
         </Upload>
       )
     },
     {
       name: 'description',
       label: 'Mô tả',
-      rules: [{ max: 300, message: 'Mô tả quá dài!' }],
+      rules: [{ max: 1000, message: 'Mô tả quá dài!' }],
       component: (
         <Input.TextArea rows={8} />
       )

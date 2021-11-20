@@ -28,3 +28,10 @@
   align-items: center;
   flex-direction: column;
 }
+.uploadButton {
+  cursor: pointer;
+}
+.uploadImage {
+  max-width: 256px;
+  max-height: 256px;
+}
