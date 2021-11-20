@@ -1,10 +1,13 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { Table, Button, Input, Modal, Image } from 'antd';
+import { push } from 'connected-react-router';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
+import { Card, Table, Button, Input, Modal, Image } from 'antd';
 
 import styles from './styles.module.css';
+import { routes } from '../../constants';
 import { formatCurrency } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
 
@@ -55,6 +58,12 @@ const ProductManagePage = () => {
       key: 'name',
     },
     {
+      title: 'Hình ảnh',
+      dataIndex: 'image',
+      key: 'image',
+      render: (imageSource) => <Image src={imageSource} width={100} />
+    },
+    {
       width: 200,
       title: 'Giá',
       dataIndex: 'price',
@@ -66,12 +75,6 @@ const ProductManagePage = () => {
     //   dataIndex: 'Description',
     //   key: 'Description',
     // },
-    {
-      title: 'Hình ảnh',
-      dataIndex: 'image',
-      key: 'image',
-      render: (imageSource) => <Image src={imageSource} width={100} />
-    },
     {
       width: 175,
       title: 'Ngày tạo',
@@ -95,7 +98,7 @@ const ProductManagePage = () => {
 
   React.useEffect(() => {
     if (!modalRef.current) return;
-  
+
     if (deleteLoading) {
       modalRef.current.update({
         okButtonProps: {
@@ -115,8 +118,20 @@ const ProductManagePage = () => {
     dispatch({ type: ActionTypes.GET_PRODUCTS });
   }, [dispatch]);
 
-  return (
-    <div className={styles.container}>
+  const onClickAddProduct = React.useCallback(() => {
+    dispatch(push(routes.ADD_PRODUCT.path));
+  }, [dispatch]);
+
+  const cardExtra = React.useMemo(() => (
+    <div className={styles.cardExtra}>
+      <Button
+        type="primary"
+        // shape="circle"
+        icon={<AiOutlinePlus />}
+        className={styles.addProductFAB}
+        onClick={onClickAddProduct}
+      >Thêm sản phẩm</Button>
+
       <div className={styles.searchContainer}>
         <Input.Search
           enterButton
@@ -124,14 +139,24 @@ const ProductManagePage = () => {
           onSearch={onSearch}
         />
       </div>
+    </div>
+  ), [onClickAddProduct, onSearch]);
 
-      <Table
-        rowKey="Id"
-        loading={loading}
-        columns={columns}
-        dataSource={products}
-        pagination={{ pageSize: 7 }}
-      />
+  return (
+    <div className={styles.container}>
+      <Card
+        title="Quản lý kho"
+        extra={cardExtra}
+        bodyStyle={{ padding: 0 }}
+      >
+        <Table
+          rowKey="Id"
+          loading={loading}
+          columns={columns}
+          dataSource={products}
+          pagination={{ pageSize: 5 }}
+        />
+      </Card>
     </div>
   );
 }

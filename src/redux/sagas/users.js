@@ -16,7 +16,7 @@ function* getUserAction() {
 
     errorMessage = data.errors.jwt_mdlw_error;
   } catch (error) {
-    errorMessage = error.message;
+    errorMessage = error.response?.data?.errors?.jwt_mdlw_error ?? error.message;
   }
 
   yield put({ type: ActionTypes.GET_USERS_FAILED });
@@ -53,7 +53,7 @@ function* blockUserAction(action) {
 
     errorMessage = data.errors.jwt_mdlw_error;
   } catch (error) {
-    errorMessage = error.message;
+    errorMessage = error.response?.data?.errors?.jwt_mdlw_error ?? error.message;
   }
 
   yield put({ type: ActionTypes.BLOCK_USER_FAILED });

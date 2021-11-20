@@ -9,6 +9,7 @@ import UserManagePage from '../pages/UserManagePage';
 import OrderManagePage from '../pages/OrderManagePage';
 import OrderDetailPage from '../pages/OrderDetailPage';
 import ProductManagePage from '../pages/ProductManagePage';
+import AddProductPage from '../pages/AddProductPage';
 import ProductDetailPage from '../pages/ProductDetailPage';
 import InComeManagePage from '../pages/IncomeManagePage';
 
@@ -37,6 +38,10 @@ export const routes = {
     path: '/products',
     exact: true,
     component: ProductManagePage
+  },
+  ADD_PRODUCT: {
+    path: '/products/add',
+    component: AddProductPage
   },
   PRODUCT_DETAIL: {
     path: '/products/detail',

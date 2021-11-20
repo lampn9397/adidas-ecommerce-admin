@@ -3,6 +3,7 @@ import * as ActionTypes from '../actionTypes';
 const defaultState = {
   loading: true,
   productList: [],
+  addLoading: false,
   deleteLoading: false,
   selectedProduct: null,
 };
@@ -54,6 +55,17 @@ export default function productReducer(state = defaultState, action) {
       return {
         ...state,
         deleteLoading: false,
+      }
+    case ActionTypes.ADD_PRODUCT:
+      return {
+        ...state,
+        addLoading: true,
+      }
+    case ActionTypes.ADD_PRODUCT_SUCCESS: 
+    case ActionTypes.ADD_PRODUCT_FAILED:
+      return {
+        ...state,
+        addLoading: false,
       }
     case ActionTypes.LOGOUT_DONE:
       return defaultState;

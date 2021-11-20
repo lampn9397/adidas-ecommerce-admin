@@ -23,8 +23,8 @@ const AppInput = ({
 AppInput.propTypes = {
   className: PropTypes.string,
   placeholder: PropTypes.string,
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
   style: PropTypes.instanceOf(Object),
 };
 
@@ -32,6 +32,8 @@ AppInput.defaultProps = {
   style: {},
   className: '',
   placeholder: '',
+  value: '',
+  onChange: () => undefined,
 };
 
 export default AppInput;

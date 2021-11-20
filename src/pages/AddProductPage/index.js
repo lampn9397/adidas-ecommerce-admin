@@ -3,7 +3,7 @@ import {
   Card,
   Form,
   Modal,
-  Table,
+  // Table,
   Input,
   Button,
   Upload,
@@ -11,41 +11,33 @@ import {
 } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { Redirect } from 'react-router-dom';
-import { FaTrashAlt } from 'react-icons/fa';
+import { PlusOutlined } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
+// import { FaTrashAlt } from 'react-icons/fa';
 
 
 import AppInput from '../../components/AppInput';
-import EditableCell from '../../components/EditableCell';
+// import EditableCell from '../../components/EditableCell';
 
 import styles from './styles.module.css';
-import { routes } from '../../constants';
 import { formatCurrency, readFile } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
 
 dayjs.extend(utc)
 
-const ProductDetailPage = () => {
+const maxProductImage = 1;
+
+const maxProductImageList = 5;
+
+const AddProductPage = () => {
   const dispatch = useDispatch();
 
-  const selectedProduct = useSelector((state) => state.products.selectedProduct);
+  const addLoading = useSelector((state) => state.products.addLoading);
 
   const [state, setState] = React.useState({
+    image: null,
     imageList: [],
-    selectedProduct: JSON.parse(JSON.stringify(selectedProduct))
   });
-
-  // const onChange = React.useCallback((fieldName) => (e) => {
-  //   setState((prevState) => ({
-  //     ...prevState,
-  //     [fieldName]: e.target.value,
-  //   }));
-  // }, []);
-
-  // const onSubmit = React.useCallback(() => {
-
-  // }, []);
 
   const onClickRemoveSize = React.useCallback((item) => () => {
     Modal.confirm({
@@ -54,7 +46,7 @@ const ProductDetailPage = () => {
       title: `Are you sure want to delete product #${item.Id}?`,
       onOk: () => {
         setState((prevState) => {
-          const products = JSON.parse(JSON.stringify(prevState.selectedProduct.products));
+          const products = JSON.parse(JSON.stringify(prevState.product.products));
 
           const itemIndex = products.findIndex((x) => x.Id === item.Id);
 
@@ -118,49 +110,63 @@ const ProductDetailPage = () => {
     };
   });
 
-
   const onFinish = React.useCallback((values) => {
-    console.log('values > ', values);
-    // setState((prevState) => ({ ...prevState, ...values }))
-    dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: values });
+    dispatch({ type: ActionTypes.ADD_PRODUCT, payload: values });
   }, [dispatch]);
 
-  const renderFormItem = React.useCallback((item) => (
-    <Form.Item
-      key={item.name}
-      name={item.name}
-      label={item.label}
-      rules={item.rules}
-      wrapperCol={item.wrapperCol}
-    >
-      {item.component || <AppInput />}
-    </Form.Item>
-  ), []);
+  const renderFormItem = React.useCallback((item) => {
+    const sharedProps = {
+      key: item.name,
+      name: item.name,
+      label: item.label,
+      rules: item.rules,
+      wrapperCol: item.wrapperCol,
+    };
 
-  const onBeforeUpload = React.useCallback((file) => {
-    console.log('onUploadChange > ', file);
-    // setState(prevState => ({
-    //   imageList: [...prevState.imageList, file],
-    // }));
-    return false;
+    if (item.valuePropName) {
+      sharedProps.valuePropName = item.valuePropName;
+    }
 
-  }, []);
+    if (item.getValueFromEvent) {
+      sharedProps.getValueFromEvent = item.getValueFromEvent;
+    }
 
-  const onUploadChange = React.useCallback((e) => {
-    console.log('onUploadChange > ', e);
-  }, []);
+    return (
+      <Form.Item
+        {...sharedProps}
+      >
+        {item.component || <AppInput disabled={addLoading} />}
+      </Form.Item>
+    )
+  }, [addLoading]);
 
-  const onUploadImageListChange = React.useCallback(async (e) => {
+  const onBeforeUpload = React.useCallback(() => false, []);
+
+  const setImageBase64 = React.useCallback(async (fieldName, file) => {
     try {
-      const response = await readFile(e.file);
+      const response = await readFile(file);
 
       setState((prevState) => ({
         ...prevState,
-        imageList: prevState.imageList.concat([{ ...e.file, base64: response.result }]),
-      }));
+        [fieldName]: {
+          ...file,
+          base64: response.result,
+        },
+      }))
     } catch (error) {
-      alert(error);
+
     }
+  }, []);
+
+  const onUploadChange = React.useCallback((e) => {
+    setImageBase64('image', e.file);
+
+    return e.fileList;
+  }, [setImageBase64]);
+
+  const onUploadImageListChange = React.useCallback((e) => {
+    setState((prevState) => ({ ...prevState, imageList: e.fileList }));
+    return e.fileList;
   }, []);
 
   const formItems = React.useMemo(() => [
@@ -178,6 +184,7 @@ const ProductDetailPage = () => {
       ],
       component: (
         <InputNumber
+          disabled={addLoading}
           className={styles.priceInput}
           parser={value => {
             // const valueWithoutCurrency = value.replace(' VNĐ', '');
@@ -189,111 +196,122 @@ const ProductDetailPage = () => {
     },
     {
       name: 'image',
-      label: 'Hình ảnh',
-      // rules: [{ required: true, message: 'Vui lòng nhập hình ảnh!' }]
+      valuePropName: 'fileList',
+      label: 'Hình ảnh đại diện',
+      getValueFromEvent: onUploadChange,
+      rules: [{ min: 1, type: 'array', message: 'Vui lòng chọn hình ảnh!' }],
       component: (
         <Upload
           accept="image/*"
-          showUploadList={false}
           listType="picture"
-          className={styles.uploadButton}
-          onChange={onUploadChange}
+          disabled={addLoading}
+          showUploadList={false}
+          maxCount={maxProductImage}
+          className={`avatar-uploader ${styles.uploadButton}`}
           beforeUpload={onBeforeUpload}
         >
-          <img src={state.selectedProduct.image} alt="avatar" className={styles.uploadImage} />
+          {state.image
+            ? <img src={state.image.base64} alt="avatar" className={styles.uploadImage} />
+            : (
+              <div className={styles.uploadButtonPlaceholder}>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Chọn ảnh</div>
+              </div>
+            )}
         </Upload>
       )
     },
     {
       name: 'imageList',
+      valuePropName: 'fileList',
       label: 'Hình ảnh chi tiết',
-      rules: [{ required: true, message: 'Vui lòng chọn hình ảnh!' }],
+      getValueFromEvent: onUploadImageListChange,
+      rules: [{ min: 1, type: 'array', message: 'Vui lòng chọn hình ảnh!' }],
       component: (
-        <>
-          <Upload
-            maxCount={5}
-            accept="image/*"
-            showUploadList={false}
-            listType="picture"
-            fileList={state.imageList}
-            className={`avatar-uploader ${styles.uploadButton}`}
-            onChange={onUploadImageListChange}
-            beforeUpload={onBeforeUpload}
-          />
-        </>
+        <Upload
+          accept="image/*"
+          disabled={addLoading}
+          listType="picture-card"
+          className="avatar-uploader"
+          maxCount={maxProductImageList}
+          multiple={state.imageList.length < maxProductImageList - 1}
+          beforeUpload={onBeforeUpload}
+        >
+          {state.imageList.length < maxProductImageList && (
+            <div>
+              <PlusOutlined />
+              <div style={{ marginTop: 8 }}>Chọn ảnh</div>
+            </div>
+          )}
+        </Upload>
       )
     },
     {
       name: 'specifications',
-      label: 'Thông tin chi tiết',
-      rules: [{ required: true, message: 'Vui lòng nhập thông tin chi tiết!' }],
-      component: (
-        <Input.TextArea rows={3} />
-      )
+      label: 'Chi tiết sản phẩm',
+      rules: [
+        { required: true, message: 'Vui lòng nhập chi tiết sản phẩm.' },
+      ],
+      component: <Input.TextArea disabled={addLoading} rows={3} />
     },
     {
       name: 'description',
       label: 'Mô tả',
       rules: [
-        { required: true, message: 'Vui lòng nhập mô tả cho sản phẩm!' },
-        { max: 1000, message: 'Mô tả quá dài!' }
+        { required: true, message: 'Vui lòng nhập mô tả cho sản phẩm.' },
+        { max: 1000, message: 'Mô tả quá dài!' },
       ],
-      component: (
-        <Input.TextArea rows={5} />
-      )
+      component: <Input.TextArea disabled={addLoading} rows={8} />
     },
     {
+      name: 'submit',
       wrapperCol: {
         offset: 5,
         span: 10,
       },
       component: (
-        <Button type="primary" htmlType="submit">
+        <Button
+          type="primary"
+          htmlType="submit"
+          loading={addLoading}
+          disabled={addLoading}
+        >
           Cập nhật
         </Button>
       )
     },
-  ], [onBeforeUpload, onUploadChange, state.selectedProduct.image]);
-
-  const onSizeTableFormFinish = React.useCallback((values) => {
-    console.log("🚀 ~ file: index.js ~ line 186 ~ onSizeTableFormFinish ~ values", values)
-  }, []);
-
-  const onClickRemoveProduct = React.useCallback(() => {
-    Modal.confirm({
-      maskClosable: true,
-      okButtonProps: { danger: true },
-      title: `Are you sure want to delete product ${state.selectedProduct.name}?`,
-      onOk: () => {
-
-      }
-    });
-  }, [state.selectedProduct.name]);
-
-  if (!selectedProduct) {
-    return <Redirect to={routes.PRODUCTS.path} />;
-  }
+  ], [
+    onBeforeUpload,
+    onUploadChange,
+    onUploadImageListChange,
+    addLoading,
+    state.image,
+    state.imageList.length,
+  ]);
 
   return (
     <div className={styles.container}>
-      <Card
-        title={`Sản phẩm: ${state.selectedProduct.name}`}
-        extra={<Button danger icon={<FaTrashAlt />} onClick={onClickRemoveProduct} />}
-      >
+      <Card title="Thêm sản phẩm">
         <Form
           name="product-form"
           labelCol={{ span: 3 }}
           wrapperCol={{ span: 10 }}
-          initialValues={state.selectedProduct}
+          initialValues={{
+            name: '',
+            price: 0,
+            image: [],
+            imageList: [],
+            specifications: '',
+            description: '',
+          }}
           onFinish={onFinish}
-          // onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           {formItems.map(renderFormItem)}
         </Form>
       </Card>
 
-      <Card title="Size của sản phẩm:" className={styles.tableContainer}>
+      {/* <Card title="Size của sản phẩm:" className={styles.tableContainer}>
         <Form
           name="size-table-form"
           onFinish={onSizeTableFormFinish}
@@ -314,9 +332,9 @@ const ProductDetailPage = () => {
             pagination={{ pageSize: 5 }}
           />
         </Form>
-      </Card>
+      </Card> */}
     </div>
   );
 }
 
-export default ProductDetailPage;
+export default AddProductPage;

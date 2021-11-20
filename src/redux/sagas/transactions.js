@@ -17,7 +17,7 @@ function* getTransactions() {
 
     errorMessage = data.errors.jwt_mdlw_error;
   } catch (error) {
-    errorMessage = error.message;
+    errorMessage = error.response?.data?.errors?.jwt_mdlw_error ?? error.message;
   }
   
   yield put({ type: ActionTypes.GET_TRANSACTIONS_FAILED });
