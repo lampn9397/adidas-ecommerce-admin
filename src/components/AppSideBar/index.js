@@ -38,11 +38,10 @@ const AppSideBar = ({
 
       <Menu
         theme="dark"
+        mode="inline"
         defaultSelectedKeys={[location.pathname]}
         selectedKeys={[location.pathname]}
-        mode="inline"
       >
-
         {sideMenuItems.map(renderMenuItem)}
       </Menu>
     </Sider>
