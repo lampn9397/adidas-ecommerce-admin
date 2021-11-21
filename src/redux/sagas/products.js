@@ -63,7 +63,7 @@ function* addProductAction(action) {
         yield new Promise((resolve) => {
           modal = Modal.success({
             title: 'Thành công',
-            content: 'Cập nhật sản phẩm thành công',
+            content: 'Thêm sản phẩm thành công',
             onOk: resolve,
           })
         });
