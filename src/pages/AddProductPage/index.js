@@ -202,19 +202,6 @@ const AddProductPage = () => {
       rules: [{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]
     },
     {
-      name: 'category',
-      label: 'Danh mục',
-      rules: [{ required: true, message: 'Vui lòng chọn danh mục cho sản phẩm!' }],
-      component: (
-        <TreeSelect
-          treeDefaultExpandAll
-          placeholder="Chọn danh mục"
-        >
-          {categories.map(renderCategoryItem)}
-        </TreeSelect>
-      )
-    },
-    {
       name: 'price',
       label: 'Giá sản phẩm',
       rules: [
@@ -225,12 +212,21 @@ const AddProductPage = () => {
         <InputNumber
           disabled={addLoading}
           className={styles.priceInput}
-          parser={value => {
-            // const valueWithoutCurrency = value.replace(' VNĐ', '');
-            // const valueWithoutSeparator = valueWithoutCurrency.replace(/,/g, '').trim();
-            return value.replace(/\D/g, '').trim();
-          }}
+          parser={(value) => value.replace(/\D/g, '').trim()}
           formatter={(value) => formatCurrency(`${value} VNĐ`)} />
+      )
+    },
+    {
+      name: 'category',
+      label: 'Danh mục',
+      rules: [{ required: true, message: 'Vui lòng chọn danh mục cho sản phẩm!' }],
+      component: (
+        <TreeSelect
+          treeDefaultExpandAll
+          placeholder="Chọn danh mục"
+        >
+          {categories.map(renderCategoryItem)}
+        </TreeSelect>
       )
     },
     {
