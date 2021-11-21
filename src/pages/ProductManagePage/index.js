@@ -61,7 +61,15 @@ const ProductManagePage = () => {
       title: 'Hình ảnh',
       dataIndex: 'image',
       key: 'image',
-      render: (imageSource) => <Image src={imageSource} width={100} />
+      render: (imageSource) => {
+        let customImageSource = imageSource;
+
+        if(!customImageSource.startsWith('http')) {
+          customImageSource = `http://127.0.0.1:8000/${customImageSource}`
+        }
+
+        return <Image src={customImageSource} width={100} />;
+      }
     },
     {
       width: 200,
