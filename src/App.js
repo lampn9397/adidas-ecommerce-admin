@@ -97,6 +97,7 @@ const App = () => {
       <Layout className={styles.layoutContainer}>
         {/* LEFT SIDE BAR */}
         <AppSideBar
+          user={user}
           collapsed={collapsed}
           sideMenuItems={sideMenuItems}
           onClickMenuItem={onClickMenuItem}
