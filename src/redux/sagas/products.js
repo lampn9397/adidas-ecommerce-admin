@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
 import { push } from 'connected-react-router';
-import { put, select, takeLeading } from 'redux-saga/effects';
+import { put, fork, select, takeLeading } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
 import { axiosClient, responseStatus, routes } from '../../constants';
@@ -51,22 +51,38 @@ function* addProductAction(action) {
     const { data } = yield axiosClient.post('/product', formData);
 
     if (data.status === responseStatus.OK) {
+      // Hide loading
       yield put({ type: ActionTypes.ADD_PRODUCT_SUCCESS });
 
-      yield put({ type: ActionTypes.GET_PRODUCTS });
+      // Reload product list
+      yield fork(put, { type: ActionTypes.GET_PRODUCTS });
 
-      let modal;
-      yield new Promise((resolve) => {
-        modal = Modal.success({
-          title: 'Thành công',
-          content: 'Cập nhật sản phẩm thành công',
-          onOk: resolve,
-        })
-      });
+      // Show success modal
+      const showModal = function* () {
+        let modal;
+        yield new Promise((resolve) => {
+          modal = Modal.success({
+            title: 'Thành công',
+            content: 'Cập nhật sản phẩm thành công',
+            onOk: resolve,
+          })
+        });
 
-      modal.destroy();
+        modal.destroy();
 
-      yield put(push(routes.PRODUCTS.path))
+        yield put(push(routes.PRODUCTS.path))
+      };
+
+      yield fork(showModal);
+
+      // Add product sizes
+      for (const sizeItem of payload.sizes) {
+        axiosClient.post('/detail-product', {
+          product_id: data.results.id,
+          quantity: sizeItem.quantity,
+          size: sizeItem.size
+        });
+      }
       return;
     }
 
