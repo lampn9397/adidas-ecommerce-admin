@@ -35,7 +35,7 @@ function* addProductAction(action) {
     const formData = new FormData();
 
     formData.append('name', payload.name);
-    formData.append('category_id', '2');
+    formData.append('category_id', `${payload.category}`);
     formData.append('price', payload.price);
     formData.append('description', payload.description);
     formData.append('specifications', payload.specifications);

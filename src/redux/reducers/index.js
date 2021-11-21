@@ -4,6 +4,7 @@ import { connectRouter } from 'connected-react-router';
 import appReducer from './app';
 import usersReducer from './users';
 import productReducer from './products';
+import categoriesReducer from './categories';
 import transactionsReducer from './transactions';
 
 const createRootReducer = (history) => combineReducers({
@@ -11,6 +12,7 @@ const createRootReducer = (history) => combineReducers({
   app: appReducer,
   users: usersReducer,
   products: productReducer,
+  categories: categoriesReducer,
   transactions: transactionsReducer,
 });
 

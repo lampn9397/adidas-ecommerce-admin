@@ -34,6 +34,12 @@ const App = () => {
     dispatch({ type: ActionTypes.CHECK_LOGIN });
   }, [dispatch])
 
+  React.useEffect(() => {
+    if (!user) return;
+
+    dispatch({ type: ActionTypes.GET_CATEGORIES });
+  }, [user, dispatch])
+
   const onClickToggle = React.useCallback(() => {
     dispatch({ type: ActionTypes.TOGGLE_SIDEBAR });
   }, [dispatch]);

@@ -3,6 +3,7 @@ import { all, fork } from 'redux-saga/effects';
 import appSaga from './app';
 import usersSaga from './users';
 import productsSaga from './products';
+import categoriesSaga from './categories';
 import transactionsSaga from './transactions'
 
 export default function* rootSaga() {
@@ -10,6 +11,7 @@ export default function* rootSaga() {
     fork(appSaga),
     fork(usersSaga),
     fork(productsSaga),
+    fork(categoriesSaga),
     fork(transactionsSaga),
   ]);
 }

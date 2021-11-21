@@ -3,8 +3,8 @@ import {
   Card,
   Form,
   Modal,
-  // Table,
   Input,
+  TreeSelect,
   Button,
   Upload,
   InputNumber,
@@ -20,8 +20,8 @@ import AppInput from '../../components/AppInput';
 // import EditableCell from '../../components/EditableCell';
 
 import styles from './styles.module.css';
-import { formatCurrency, readFile } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
+import { formatCurrency, readFile } from '../../utils';
 
 dayjs.extend(utc)
 
@@ -31,6 +31,8 @@ const maxProductImageList = 5;
 
 const AddProductPage = () => {
   const dispatch = useDispatch();
+
+  const categories = useSelector((state) => state.categories.data);
 
   const addLoading = useSelector((state) => state.products.addLoading);
 
@@ -169,11 +171,48 @@ const AddProductPage = () => {
     return e.fileList;
   }, []);
 
+  const renderCategoryItem = React.useCallback((item) => {
+    let childrens = [];
+
+    if (item.subs) {
+      childrens = Object.values(item.subs).map((item) => (
+        <TreeSelect.TreeNode
+          key={item.id}
+          value={item.id}
+          title={item.name}
+        />
+      ));
+    }
+
+    return (
+      <TreeSelect.TreeNode
+        key={item.id}
+        value={item.id}
+        title={item.name}
+      >
+        {childrens}
+      </TreeSelect.TreeNode>
+    );
+  }, []);
+
   const formItems = React.useMemo(() => [
     {
       name: 'name',
       label: 'Tên sản phẩm',
       rules: [{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]
+    },
+    {
+      name: 'category',
+      label: 'Danh mục',
+      rules: [{ required: true, message: 'Vui lòng chọn danh mục cho sản phẩm!' }],
+      component: (
+        <TreeSelect
+          treeDefaultExpandAll
+          placeholder="Chọn danh mục"
+        >
+          {categories.map(renderCategoryItem)}
+        </TreeSelect>
+      )
     },
     {
       name: 'price',
@@ -281,9 +320,11 @@ const AddProductPage = () => {
       )
     },
   ], [
+    renderCategoryItem,
     onBeforeUpload,
     onUploadChange,
     onUploadImageListChange,
+    categories,
     addLoading,
     state.image,
     state.imageList.length,
@@ -299,6 +340,7 @@ const AddProductPage = () => {
           initialValues={{
             name: '',
             price: 0,
+            category: null,
             image: [],
             imageList: [],
             specifications: '',
