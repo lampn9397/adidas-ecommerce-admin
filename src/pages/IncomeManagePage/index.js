@@ -1,39 +1,19 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
-import { Table, Button, Input, Modal } from 'antd';
+import { Table, Button, Input, Modal, Image } from 'antd';
 import { Line } from '@ant-design/charts';
 
 import styles from './styles.module.css';
 import { routes } from '../../constants';
-
-export const products = Array.from({ length: 10 }).fill().map((_, index) => {
-  const productNumber = index + 1;
-  return {
-    Id: `${productNumber}`,
-    Name: `Product #${productNumber}`,
-    Image: `Product #${productNumber} image`,
-    Product_Sold: 50,
-  };
-});
-
-export const income = Array.from({ length: 10 }).fill().map((_, index) => {
-    const transaction_id = index + 1;
-    return {
-      Transaction_Id: `${transaction_id}`,
-      Date: '20:32 15/11/2021',
-      Amount: 500,
-    };
-  });
+import * as ActionTypes from '../../redux/actionTypes';
 
 const InComeManagePage = () => {
   const dispatch = useDispatch();
 
-  const [state, setState] = React.useState({
-    products,
-    income
-  });
+  const loading = useSelector((state) => state.budget.loading);
 
+  const budget = useSelector((state) => state.budget.budgetList);
 
   const onSearch = React.useCallback((text) => {
 
@@ -60,25 +40,25 @@ const InComeManagePage = () => {
 
   const columns = [
     {
-      title: 'Id',
-      dataIndex: 'Id',
-      key: 'Id',
+      title: 'Product_Id',
+      dataIndex: 'product_id',
+      key: 'product_id',
     },
     {
       title: 'Name',
-      dataIndex: 'Name',
-      key: 'Name',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
-      title: 'Image',
-      dataIndex: 'Image',
-      key: 'Image',
+      title: 'Thu Nhập',
+      dataIndex: 'price',
+      key: 'price',
     },
     {
-        title: 'Product_Sold',
-        dataIndex: 'Product_Sold',
-        key: 'Product_Sold',
-      },
+      title: 'Số Lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
+    },
 
   ];
 
@@ -103,7 +83,10 @@ const InComeManagePage = () => {
       shape: 'diamond',
     },
   };
-  //return <Line {...config} />;
+
+  React.useEffect(() => {
+    dispatch({ type: ActionTypes.GET_BUDGET });
+  }, [dispatch]);
 
   return (
     <div className={styles.container}>
@@ -118,16 +101,16 @@ const InComeManagePage = () => {
       <Table
         rowKey="Id"
         columns={columns}
-        dataSource={state.products}
+        dataSource={budget}
         pagination={{ pageSize: 4 }}
       />
 
-     <Table
+     {/* <Table
         rowKey="Id"
         columns={columns2}
         dataSource={state.income}
         pagination={{ pageSize: 4 }}
-      />
+      /> */}
       <Line {...config} />;
     </div>
     
