@@ -104,3 +104,16 @@ export const axiosClient = axios.create({
 });
 
 export const imageListSeparator = ';';
+
+export const transactionStatus = {
+  ORDER_CANCELLED: 0,
+  ORDER_SUCCESS: 1,
+  ORDER_DELIVERY: 1,
+  ORDER_DELIVERED: 1,
+}
+export const transactionStatusLabel = {
+  0: 'Đã hủy hoặc trả lại',
+  1: 'Đặt hàng thành công',
+  2: 'Đang giao hàng',
+  3: 'Giao hàng thành công'
+}

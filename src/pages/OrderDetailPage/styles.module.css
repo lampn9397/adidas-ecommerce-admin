@@ -24,3 +24,10 @@
 .customerDetailCard {
   margin-bottom: 24px;
 }
+.fieldContainer {
+  display: flex;
+  margin-bottom: 16px;
+}
+.fieldLabel {
+  width: 200px;
+}

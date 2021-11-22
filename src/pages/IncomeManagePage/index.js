@@ -40,26 +40,23 @@ const InComeManagePage = () => {
 
   const columns = [
     {
-      title: 'Product_Id',
+      title: 'No.',
       dataIndex: 'product_id',
-      key: 'product_id',
+      render: (_, item, index) => index + 1,
     },
     {
-      title: 'Name',
+      title: 'Tên sản phẩm',
       dataIndex: 'name',
-      key: 'name',
     },
     {
-      title: 'Thu Nhập',
-      dataIndex: 'price',
-      key: 'price',
-    },
-    {
-      title: 'Số Lượng',
+      title: 'Doanh số',
       dataIndex: 'quantity',
-      key: 'quantity',
     },
-
+    {
+      title: 'Doanh thu',
+      dataIndex: 'price',
+      render: (price) => `${price} VNĐ`
+    },
   ];
 
   const data = [
@@ -99,21 +96,21 @@ const InComeManagePage = () => {
       </div>
 
       <Table
-        rowKey="Id"
+        rowKey="product_id"
         columns={columns}
         dataSource={budget}
         pagination={{ pageSize: 4 }}
       />
 
-     {/* <Table
+      {/* <Table
         rowKey="Id"
         columns={columns2}
         dataSource={state.income}
         pagination={{ pageSize: 4 }}
       /> */}
-      <Line {...config} />;
+      <Line {...config} />
     </div>
-    
+
   );
 }
 export default InComeManagePage;

@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './styles.module.css';
 import { formatCurrency } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
+import { transactionStatusLabel } from '../../constants';
 
 dayjs.extend(utc)
 
@@ -51,7 +52,7 @@ const OrderManagePage = () => {
     {
       title: 'Trạng thái',
       dataIndex: 'status',
-      render: (text) => `${text}`
+      render: (status) => transactionStatusLabel[status]
     },
     {
       width: 175,
