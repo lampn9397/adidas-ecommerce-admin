@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card, Col, Table } from 'antd';
+import { Card, Tag, Table } from 'antd';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import styles from './styles.module.css';
 import { formatCurrency } from '../../utils';
-import { routes, transactionStatusLabel } from '../../constants';
+import { routes, transactionStatusColor, transactionStatusLabel } from '../../constants';
 
 const OrderDetailPage = () => {
   const selectedTransaction = useSelector((state) => state.transactions.selectedTransaction);
@@ -51,7 +51,7 @@ const OrderDetailPage = () => {
         </div>
         <div className={styles.fieldContainer}>
           <div className={styles.fieldLabel}><span>Trạng thái:</span></div>
-          <span>{transactionStatusLabel[selectedTransaction.status]}</span>
+          <Tag color={transactionStatusColor[selectedTransaction.status]}>{transactionStatusLabel[selectedTransaction.status]}</Tag>
         </div>
         <div className={styles.fieldContainer}>
           <div className={styles.fieldLabel}><span>Tên khách hàng:</span></div>

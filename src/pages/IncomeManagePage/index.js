@@ -87,13 +87,13 @@ const InComeManagePage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.searchContainer}>
+      {/* <div className={styles.searchContainer}>
         <Input.Search
           enterButton
           placeholder="Tìm kiếm sản phẩm"
           onSearch={onSearch}
         />
-      </div>
+      </div> */}
 
       <Table
         rowKey="product_id"

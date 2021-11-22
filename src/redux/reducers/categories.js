@@ -2,7 +2,7 @@ import * as ActionTypes from '../actionTypes';
 
 const defaultState = {
   loading: true,
-  data: [],
+  categoryList: [],
 };
 
 export default function categoriesReducer(state = defaultState, action) {
@@ -16,7 +16,7 @@ export default function categoriesReducer(state = defaultState, action) {
       return {
         ...state,
         loading: false,
-        data: action.payload,
+        categoryList: action.payload,
       }
     case ActionTypes.GET_CATEGORIES_FAILED:
       return {

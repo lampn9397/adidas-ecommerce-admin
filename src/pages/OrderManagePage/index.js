@@ -1,13 +1,13 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { Table, Button, Input } from 'antd';
+import { Tag, Table, Button, Input } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.css';
 import { formatCurrency } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
-import { transactionStatusLabel } from '../../constants';
+import { transactionStatusColor, transactionStatusLabel } from '../../constants';
 
 dayjs.extend(utc)
 
@@ -52,7 +52,9 @@ const OrderManagePage = () => {
     {
       title: 'Trạng thái',
       dataIndex: 'status',
-      render: (status) => transactionStatusLabel[status]
+      render: (status) => (
+        <Tag color={transactionStatusColor[status]}>{transactionStatusLabel[status]}</Tag>
+      )
     },
     {
       width: 175,
@@ -72,7 +74,13 @@ const OrderManagePage = () => {
       dataIndex: 'functions',
       key: 'id',
       render: (text, item) => (
-        <Button type="primary" className={styles.buttonSeparator} onClick={onClickDetail(item)}>Chi tiết</Button>
+        <Button
+          type="primary"
+          className={styles.buttonSeparator}
+          onClick={onClickDetail(item)}
+        >
+          Chi tiết
+        </Button>
       )
     },
   ];

@@ -28,7 +28,7 @@ export const maxProductImageList = 5;
 const AddProductPage = () => {
   const dispatch = useDispatch();
 
-  const categories = useSelector((state) => state.categories.data);
+  const categories = useSelector((state) => state.categories.categoryList);
 
   const addLoading = useSelector((state) => state.products.addLoading);
 

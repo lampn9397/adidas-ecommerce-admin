@@ -36,7 +36,7 @@ const ProductDetailPage = () => {
     return <Redirect to={routes.PRODUCTS.path} />;
   }
 
-  const categories = useSelector((state) => state.categories.data);
+  const categories = useSelector((state) => state.categories.categoryList);
 
   const [state, setState] = React.useState(() => {
     const clonedSelectedProduct = JSON.parse(JSON.stringify(selectedProduct));
