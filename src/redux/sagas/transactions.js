@@ -2,6 +2,7 @@ import { push } from 'connected-react-router';
 import { put, takeLeading } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
+import { apiErrorHandler } from '../../utils';
 import { axiosClient, responseStatus, routes } from '../../constants';
 
 function* getTransactions() {
@@ -22,7 +23,7 @@ function* getTransactions() {
   
   yield put({ type: ActionTypes.GET_TRANSACTIONS_FAILED });
 
-  alert(errorMessage);
+  yield apiErrorHandler(errorMessage);
 }
 
 function* selectTransaction() {

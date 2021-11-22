@@ -12,11 +12,8 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import { useDispatch, useSelector } from 'react-redux';
 import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons';
-// import { FaTrashAlt } from 'react-icons/fa';
-
 
 import AppInput from '../../components/AppInput';
-// import EditableCell from '../../components/EditableCell';
 
 import styles from './styles.module.css';
 import * as ActionTypes from '../../redux/actionTypes';
@@ -24,9 +21,9 @@ import { formatCurrency, readFile } from '../../utils';
 
 dayjs.extend(utc)
 
-const maxProductImage = 1;
+export const maxProductImage = 1;
 
-const maxProductImageList = 5;
+export const maxProductImageList = 5;
 
 const AddProductPage = () => {
   const dispatch = useDispatch();

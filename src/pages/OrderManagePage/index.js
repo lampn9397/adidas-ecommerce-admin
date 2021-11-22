@@ -30,40 +30,33 @@ const OrderManagePage = () => {
       width: 100,
       title: 'Đơn hàng',
       dataIndex: 'id',
-      key: 'id',
     },
     {
       title: 'Tên khách hàng',
       dataIndex: 'user_name',
-      key: 'user_name',
     },
     {
       title: 'Email',
       dataIndex: 'user_email',
-      key: 'user_email',
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'user_phone',
-      key: 'user_phone',
     },
     {
       title: 'Tổng tiền',
       dataIndex: 'amount',
-      key: 'amount',
       render: (text) => formatCurrency(`${text} VNĐ`)
     },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
-      key: 'status',
       render: (text) => `${text}`
     },
     {
       width: 175,
       title: 'Ngày tạo',
       dataIndex: 'created_at',
-      key: 'created_at',
       render: (text) => dayjs.utc(text || undefined).format('HH:mm DD/MM/YYYY')
     },
     // {
@@ -76,7 +69,7 @@ const OrderManagePage = () => {
       width: 175,
       title: 'Chức năng',
       dataIndex: 'functions',
-      key: 'functions',
+      key: 'id',
       render: (text, item) => (
         <Button type="primary" className={styles.buttonSeparator} onClick={onClickDetail(item)}>Chi tiết</Button>
       )
@@ -98,7 +91,7 @@ const OrderManagePage = () => {
       </div>
 
       <Table
-        rowKey="Transaction_Id"
+        rowKey="id"
         loading={loading}
         columns={columns}
         // tableLayout="fixed"

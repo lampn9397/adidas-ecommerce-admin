@@ -95,6 +95,12 @@ export const responseStatus = {
   NG: 'NG', // Failed
 };
 
+export const responseError = {
+  UNAUTHENTICATED: 'Unauthenticated.',
+};
+
 export const axiosClient = axios.create({
   baseURL: 'http://127.0.0.1:8000/api-admin'
 });
+
+export const imageListSeparator = ';';

@@ -1,4 +1,6 @@
 import { put, takeLeading } from 'redux-saga/effects';
+
+import { apiErrorHandler } from '../../utils';
 import { axiosClient, responseStatus } from '../../constants';
 
 import * as ActionTypes from '../actionTypes';
@@ -21,7 +23,7 @@ function* getCategories() {
 
   yield put({ type: ActionTypes.GET_CATEGORIES_FAILED });
 
-  alert(errorMessage);
+  yield apiErrorHandler(errorMessage);
 }
 
 export default function* categoriesSaga() {

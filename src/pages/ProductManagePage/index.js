@@ -50,17 +50,14 @@ const ProductManagePage = () => {
     {
       title: 'Id',
       dataIndex: 'id',
-      key: 'id',
     },
     {
       title: 'Tên sản phẩm',
       dataIndex: 'name',
-      key: 'name',
     },
     {
       title: 'Hình ảnh',
       dataIndex: 'image',
-      key: 'image',
       render: (imageSource) => {
         let customImageSource = imageSource;
 
@@ -75,7 +72,6 @@ const ProductManagePage = () => {
       width: 200,
       title: 'Giá',
       dataIndex: 'price',
-      key: 'price',
       render: (text) => formatCurrency(`${text} VNĐ`)
     },
     // {
@@ -87,15 +83,13 @@ const ProductManagePage = () => {
       width: 175,
       title: 'Ngày tạo',
       dataIndex: 'created_at',
-      key: 'created_at',
       render: (text) => dayjs.utc(text || undefined).format('HH:mm DD/MM/YYYY')
     },
     {
       width: 200,
       title: 'Chức năng',
-      dataIndex: 'functions',
-      key: 'functions',
-      render: (text, item) => (
+      dataIndex: 'id',
+      render: (id, item) => (
         <div>
           <Button type="primary" className={styles.buttonSeparator} onClick={onClickEdit(item)}>Chỉnh sửa</Button>
           <Button type="primary" danger onClick={onClickRemove(item)}>Xóa</Button>
@@ -158,7 +152,7 @@ const ProductManagePage = () => {
         bodyStyle={{ padding: 0 }}
       >
         <Table
-          rowKey="Id"
+          rowKey="id"
           loading={loading}
           columns={columns}
           dataSource={products}
