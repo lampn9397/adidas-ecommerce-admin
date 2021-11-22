@@ -60,16 +60,10 @@ const CategoryManagePage = () => {
       dataIndex: 'functions',
       key: 'functions',
       render: (_, item) => {
-        const isBlocked = !!item.deleted_at;
-        const blockColor = isBlocked ? 'green' : undefined;
         return (
           <Button
+            danger
             type="primary"
-            danger={!isBlocked}
-            style={{
-              borderColor: blockColor,
-              backgroundColor: blockColor,
-            }}
             onClick={onClickDelete(item)}
           >
             Xóa
