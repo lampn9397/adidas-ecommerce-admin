@@ -1,4 +1,4 @@
-import { call, put, takeLeading } from 'redux-saga/effects';
+import { call, put, all, takeLeading } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
 import { apiErrorHandler } from '../../utils';
@@ -50,7 +50,40 @@ function* deleteCategory(action) {
   yield call(apiErrorHandler, errorMessage);
 }
 
+function* addCategory(action) {
+  let errorMessage = 'Failed to create categories';
+
+  try {
+    const { payload } = action;
+
+    const body = { name: payload.categoryName }
+
+    if (payload.parentCategory) {
+      body.type = payload.parentCategory;
+    }
+
+    const { data } = yield axiosClient.post('/category', body);
+
+    if (data.status === responseStatus.OK) {
+      yield all([
+        put({ type: ActionTypes.ADD_CATEGORY_SUCCESS }),
+        put({ type: ActionTypes.GET_CATEGORIES })
+      ]);
+      return;
+    }
+
+    errorMessage = data.errors?.jwt_mdlw_error ?? errorMessage;
+  } catch (error) {
+    errorMessage = error.response?.data?.errors?.jwt_mdlw_error ?? error.message;
+  }
+
+  yield put({ type: ActionTypes.ADD_CATEGORY_FAILED });
+
+  yield call(apiErrorHandler, errorMessage);
+}
+
 export default function* categoriesSaga() {
   yield takeLeading(ActionTypes.GET_CATEGORIES, getCategories);
   yield takeLeading(ActionTypes.DELETE_CATEGORY, deleteCategory);
+  yield takeLeading(ActionTypes.ADD_CATEGORY, addCategory);
 }
