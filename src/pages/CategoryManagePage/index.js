@@ -97,9 +97,9 @@ const CategoryManagePage = () => {
 
       modalRef.current = null;
       
-      form.resetFields();
+      form?.resetFields();
     }
-  }, [deleteLoading, addLoading]);
+  }, [deleteLoading, addLoading, form]);
 
   React.useEffect(() => {
     dispatch({ type: ActionTypes.GET_CATEGORIES });
