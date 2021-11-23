@@ -14,3 +14,7 @@
   margin-bottom: 24px;
   align-self: flex-end;
 }
+
+.cardSeparator {
+  margin-bottom: 50px;
+}
