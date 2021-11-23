@@ -2,10 +2,11 @@ import * as ActionTypes from '../actionTypes';
 
 const defaultState = {
     budgetList: [],
+    yearbudgetList: [],
     loading: true,
     blockLoading: false,
   };
-  
+
   export default function budgetReducer(state = defaultState, action) {
     switch (action.type) {
       case ActionTypes.GET_BUDGET:
@@ -23,9 +24,26 @@ const defaultState = {
         return {
           ...state,
           loading: false,
-        }      
+        }
+        case ActionTypes.GET_YEARBUDGET:
+          return {
+            ...state,
+            loading: true,
+          }
+        case ActionTypes.GET_YEARBUDGET_SUCCESS:
+          return {
+            ...state,
+            loading: false,
+            yearbudgetList: action.payload,
+          }
+        case ActionTypes.GET_YEARBUDGET_FAILED:
+          return {
+            ...state,
+            loading: false,
+          }          
       case ActionTypes.LOGOUT_DONE:
         return defaultState;
       default: return state;
     }
   }
+

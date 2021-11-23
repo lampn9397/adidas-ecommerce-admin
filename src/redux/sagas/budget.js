@@ -7,7 +7,7 @@ function* getBudgetAction() {
     let errorMessage = '';
   
     try {
-      const { data } = yield axiosClient.get('/order/admin/detail-budget');
+      const { data } = yield axiosClient.get('/order/admin/budget-product');
   
       if (data.status === responseStatus.OK) {
         yield put({ type: ActionTypes.GET_BUDGET_SUCCESS, payload: data.results });
@@ -24,6 +24,28 @@ function* getBudgetAction() {
     alert(errorMessage);
   }
 
+  function* getYearBudgetAction() {
+    let errorMessage = '';
+  
+    try {
+      const { data } = yield axiosClient.get('/order/admin/budget-date?date=19-12-2021&group=year');
+  
+      if (data.status === responseStatus.OK) {
+        yield put({ type: ActionTypes.GET_YEARBUDGET_SUCCESS, payload: data.results });
+        return;
+      }
+  
+      errorMessage = data.errors.jwt_mdlw_error;
+    } catch (error) {
+      errorMessage = error.response?.data?.errors?.jwt_mdlw_error ?? error.message;
+    }
+  
+    yield put({ type: ActionTypes.GET_YEARBUDGET_FAILED });
+  
+    alert(errorMessage);
+  }
+
   export default function* appSaga() {
     yield takeLeading(ActionTypes.GET_BUDGET, getBudgetAction);
+    yield takeLeading(ActionTypes.GET_YEARBUDGET, getYearBudgetAction);
   }
