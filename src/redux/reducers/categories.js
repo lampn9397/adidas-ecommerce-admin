@@ -3,6 +3,7 @@ import * as ActionTypes from '../actionTypes';
 const defaultState = {
   loading: true,
   categoryList: [],
+  deleteLoading: false,
 };
 
 export default function categoriesReducer(state = defaultState, action) {
@@ -22,6 +23,34 @@ export default function categoriesReducer(state = defaultState, action) {
       return {
         ...state,
         loading: false,
+      }
+
+    case ActionTypes.DELETE_CATEGORY:
+      return {
+        ...state,
+        deleteLoading: true,
+      }
+    case ActionTypes.DELETE_CATEGORY_SUCCESS: {
+      const updateStates = { deleteLoading: false };
+
+      const categoryIndex = state.categoryList.findIndex((x) => x.id === action.payload.id);
+
+      if (categoryIndex > -1) {
+        updateStates.categoryList = JSON.parse(JSON.stringify(state.categoryList));
+
+        updateStates.categoryList.splice(categoryIndex, 1);
+      }
+
+      return {
+        ...state,
+        ...updateStates,
+        // categoryList: action.payload,
+      }
+    }
+    case ActionTypes.DELETE_CATEGORY_FAILED:
+      return {
+        ...state,
+        deleteLoading: false,
       }
 
     default: return state;

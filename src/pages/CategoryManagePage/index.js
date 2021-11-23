@@ -21,7 +21,6 @@ const CategoryManagePage = () => {
   const modalRef = React.useRef();
 
   const onClickDelete = React.useCallback((item) => () => {
-
     const modal = Modal.confirm({
       maskClosable: false,
       okButtonProps: { danger: true },
