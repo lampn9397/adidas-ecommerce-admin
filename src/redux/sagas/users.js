@@ -1,4 +1,4 @@
-import { put, takeLeading } from 'redux-saga/effects';
+import { put, call, takeLeading } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
 import { apiErrorHandler } from '../../utils';
@@ -22,7 +22,7 @@ function* getUserAction() {
 
   yield put({ type: ActionTypes.GET_USERS_FAILED });
 
-  yield apiErrorHandler(errorMessage);
+  yield call(apiErrorHandler, errorMessage);
 }
 
 function* blockUserAction(action) {
@@ -59,7 +59,7 @@ function* blockUserAction(action) {
 
   yield put({ type: ActionTypes.BLOCK_USER_FAILED });
 
-  yield apiErrorHandler(errorMessage);
+  yield call(apiErrorHandler, errorMessage);
 }
 
 export default function* appSaga() {

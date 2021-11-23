@@ -1,8 +1,9 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { Table, Button, Input, Modal } from 'antd';
+import { AiOutlinePlus } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
+import { Card, Table, Button, Input, Modal } from 'antd';
 
 import styles from './styles.module.css';
 import * as ActionTypes from '../../redux/actionTypes';
@@ -21,7 +22,6 @@ const CategoryManagePage = () => {
   const modalRef = React.useRef();
 
   const onClickDelete = React.useCallback((item) => () => {
-
     const modal = Modal.confirm({
       maskClosable: false,
       okButtonProps: { danger: true },
@@ -95,24 +95,47 @@ const CategoryManagePage = () => {
     dispatch({ type: ActionTypes.GET_CATEGORIES });
   }, [dispatch]);
 
-  return (
-    <div className={styles.container}>
+  const onClickAddCategory = React.useCallback(() => {
+    
+  }, []);
+
+  const cardExtra = React.useMemo(() => (
+    <div className={styles.cardExtra}>
+      <Button
+        type="primary"
+        icon={<AiOutlinePlus />}
+        className={styles.addCategoryButton}
+        onClick={onClickAddCategory}
+      >
+        Thêm danh mục
+      </Button>
+
       <div className={styles.searchContainer}>
         <Input.Search
           enterButton
-          placeholder="Danh mục..."
+          placeholder="Tìm kiếm danh mục..."
           onSearch={onSearch}
         />
       </div>
+    </div>
+  ), [onClickAddCategory, onSearch]);
 
-      <Table
-        rowKey="id"
-        loading={loading}
-        columns={columns}
-        tableLayout="fixed"
-        dataSource={categories}
-        pagination={{ pageSize: 7 }}
-      />
+  return (
+    <div className={styles.container}>
+      <Card
+        title="Quản lý sản phẩm"
+        extra={cardExtra}
+        bodyStyle={{ padding: 0 }}
+      >
+        <Table
+          rowKey="id"
+          loading={loading}
+          columns={columns}
+          tableLayout="fixed"
+          dataSource={categories}
+          pagination={{ pageSize: 7 }}
+        />
+      </Card>
     </div>
   );
 }

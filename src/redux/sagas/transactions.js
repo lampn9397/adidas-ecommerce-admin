@@ -1,5 +1,5 @@
 import { push } from 'connected-react-router';
-import { put, takeLeading } from 'redux-saga/effects';
+import { put, call, takeLeading } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
 import { apiErrorHandler } from '../../utils';
@@ -23,7 +23,7 @@ function* getTransactions() {
   
   yield put({ type: ActionTypes.GET_TRANSACTIONS_FAILED });
 
-  yield apiErrorHandler(errorMessage);
+  yield call(apiErrorHandler, errorMessage);
 }
 
 function* selectTransaction() {
