@@ -1,7 +1,8 @@
-import { fork, put } from '@redux-saga/core/effects';
+import { put } from '@redux-saga/core/effects';
 
 import * as ActionTypes from '../redux/actionTypes';
 import { imageListSeparator, responseError } from '../constants';
+import { notification } from 'antd';
 
 export const formatCurrency = (text = '') => {
   return text.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -47,6 +48,13 @@ export const getFileNameByUrl = (fileUrl) => {
 export const apiErrorHandler = function* (errorMessage) {
   if (errorMessage === responseError.UNAUTHENTICATED) {
     yield put({ type: ActionTypes.LOGOUT });
+
+    alert(errorMessage);
+    return;
   }
-  alert(errorMessage);
+
+  notification.error({
+    message: 'Lỗi!',
+    description: errorMessage,
+  });
 }
