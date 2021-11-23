@@ -61,7 +61,7 @@ const ProductManagePage = () => {
       render: (imageSource) => {
         let customImageSource = imageSource;
 
-        if(!customImageSource.startsWith('http')) {
+        if (!customImageSource.startsWith('http')) {
           customImageSource = `http://127.0.0.1:8000/${customImageSource}`
         }
 
@@ -128,16 +128,17 @@ const ProductManagePage = () => {
     <div className={styles.cardExtra}>
       <Button
         type="primary"
-        // shape="circle"
         icon={<AiOutlinePlus />}
-        className={styles.addProductFAB}
+        className={styles.addProductButton}
         onClick={onClickAddProduct}
-      >Thêm sản phẩm</Button>
+      >
+        Thêm sản phẩm
+      </Button>
 
       <div className={styles.searchContainer}>
         <Input.Search
           enterButton
-          placeholder="Tìm kiếm sản phẩm"
+          placeholder="Tìm kiếm sản phẩm..."
           onSearch={onSearch}
         />
       </div>
