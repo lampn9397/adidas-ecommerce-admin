@@ -46,7 +46,7 @@ export const getFileNameByUrl = (fileUrl) => {
 
 export const apiErrorHandler = function* (errorMessage) {
   if (errorMessage === responseError.UNAUTHENTICATED) {
-    yield fork(put, { type: ActionTypes.LOGOUT });
+    yield put({ type: ActionTypes.LOGOUT });
   }
   alert(errorMessage);
 }

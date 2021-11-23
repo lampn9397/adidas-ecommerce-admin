@@ -24,7 +24,7 @@ function* getProducts() {
 
   yield put({ type: ActionTypes.GET_PRODUCTS_FAILED });
 
-  yield apiErrorHandler(errorMessage);
+  yield call(apiErrorHandler, errorMessage);
 }
 
 function* onProductSuccess({ successAction, productId, sizes }) {
@@ -106,7 +106,7 @@ function* addProductAction(action) {
 
   yield put({ type: ActionTypes.ADD_PRODUCT_FAILED });
 
-  yield apiErrorHandler(errorMessage);
+  yield call(apiErrorHandler, errorMessage);
 }
 
 function* updateProductAction(action) {
@@ -162,7 +162,7 @@ function* updateProductAction(action) {
 
   yield put({ type: ActionTypes.UPDATE_PRODUCT_FAILED });
 
-  yield apiErrorHandler(errorMessage);
+  yield call(apiErrorHandler, errorMessage);
 }
 
 function* deleteProductAction(action) {
@@ -189,7 +189,7 @@ function* deleteProductAction(action) {
 
   yield put({ type: ActionTypes.DELETE_PRODUCT_FAILED });
 
-  yield apiErrorHandler(errorMessage);
+  yield call(apiErrorHandler, errorMessage);
 }
 
 function* selectProductAction() {
