@@ -24,3 +24,7 @@
   width: 300px;
   align-self: flex-end;
 }
+
+.buttonSeparator {
+  margin-right: 4px;
+}

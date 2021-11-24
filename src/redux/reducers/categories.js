@@ -3,6 +3,7 @@ import * as ActionTypes from '../actionTypes';
 const defaultState = {
   loading: true,
   categoryList: [],
+  updateLoading: false,
   addLoading: false,
   deleteLoading: false,
 };
@@ -45,7 +46,6 @@ export default function categoriesReducer(state = defaultState, action) {
       return {
         ...state,
         ...updateStates,
-        // categoryList: action.payload,
       }
     }
     case ActionTypes.DELETE_CATEGORY_FAILED:
@@ -53,8 +53,20 @@ export default function categoriesReducer(state = defaultState, action) {
         ...state,
         deleteLoading: false,
       }
-    
-      case ActionTypes.ADD_CATEGORY:
+
+    case ActionTypes.UPDATE_CATEGORY:
+      return {
+        ...state,
+        updateLoading: true,
+      }
+    case ActionTypes.UPDATE_CATEGORY_SUCCESS:
+    case ActionTypes.UPDATE_CATEGORY_FAILED:
+      return {
+        ...state,
+        updateLoading: false,
+      }
+
+    case ActionTypes.ADD_CATEGORY:
       return {
         ...state,
         addLoading: true,

@@ -56,10 +56,10 @@ function* addCategory(action) {
   try {
     const { payload } = action;
 
-    const body = { name: payload.categoryName }
+    const body = { name: payload.name }
 
-    if (payload.parentCategory) {
-      body.type = payload.parentCategory;
+    if (payload.type) {
+      body.type = payload.type;
     }
 
     const { data } = yield axiosClient.post('/category', body);
@@ -82,8 +82,40 @@ function* addCategory(action) {
   yield call(apiErrorHandler, errorMessage);
 }
 
+function* updateCategory(action) {
+  let errorMessage = 'Failed to update categories';
+
+  try {
+    const { payload } = action;
+
+    const body = {
+      name: payload.name,
+      type: payload.type,
+    };
+
+    const { data } = yield axiosClient.put(`/category/${payload.id}`, body);
+
+    if (data.status === responseStatus.OK) {
+      yield all([
+        put({ type: ActionTypes.UPDATE_CATEGORY_SUCCESS }),
+        put({ type: ActionTypes.GET_CATEGORIES })
+      ]);
+      return;
+    }
+
+    errorMessage = (data.errors?.jwt_mdlw_error ?? data.results?.error) || errorMessage;
+  } catch (error) {
+    errorMessage = error.response?.data?.errors?.jwt_mdlw_error ?? error.message;
+  }
+
+  yield put({ type: ActionTypes.UPDATE_CATEGORY_FAILED });
+
+  yield call(apiErrorHandler, errorMessage);
+}
+
 export default function* categoriesSaga() {
   yield takeLeading(ActionTypes.GET_CATEGORIES, getCategories);
-  yield takeLeading(ActionTypes.DELETE_CATEGORY, deleteCategory);
   yield takeLeading(ActionTypes.ADD_CATEGORY, addCategory);
+  yield takeLeading(ActionTypes.UPDATE_CATEGORY, updateCategory);
+  yield takeLeading(ActionTypes.DELETE_CATEGORY, deleteCategory);
 }

@@ -13,17 +13,16 @@ dayjs.extend(utc)
 const CategoryManagePage = () => {
   const dispatch = useDispatch();
 
-  const [form] = Form.useForm();
-
   const loading = useSelector((state) => state.categories.loading);
+  const addLoading = useSelector((state) => state.categories.addLoading);
+  const updateLoading = useSelector((state) => state.categories.updateLoading);
+  const deleteLoading = useSelector((state) => state.categories.deleteLoading);
 
   const categories = useSelector((state) => state.categories.categoryList);
 
-  const addLoading = useSelector((state) => state.categories.addLoading);
-
-  const deleteLoading = useSelector((state) => state.categories.deleteLoading);
-
   const modalRef = React.useRef();
+
+  const formRef = React.useRef();
 
   const onClickDelete = React.useCallback((item) => () => {
     const modal = Modal.confirm({
@@ -42,9 +41,68 @@ const CategoryManagePage = () => {
 
   }, []);
 
+  const showCategoryModal = React.useCallback(async (title, actionType, initialValues = { id: null, name: '', type: null, subs: [] }) => {
+    let modal;
+
+    try {
+      const values = await new Promise((resolve, reject) => {
+        modal = Modal.confirm({
+          title,
+          onCancel: reject,
+          onOk: (c) => {
+            formRef.current.submit();
+          },
+          content: (
+            <Form
+              ref={formRef}
+              autoComplete="off"
+              labelCol={{ span: 8 }}
+              wrapperCol={{ span: 16 }}
+              initialValues={initialValues}
+              style={{ margin: '24px 0 -24px -38px' }}
+              onFinish={resolve}
+            >
+              {!!initialValues.id && <Form.Item name="id" hidden />}
+
+              <Form.Item
+                label="Tên danh mục"
+                name="name"
+                rules={[{ required: true, message: 'Vui lòng nhập tên danh mục' }]}
+              >
+                <Input />
+              </Form.Item>
+
+              <Form.Item label="Danh mục cha" name="type">
+                <Select disabled={!!initialValues.subs?.length} placeholder="Chọn thư mục cha">
+                  {[{ id: null, name: 'Không có' }].concat(categories.filter((x) => !x.type)).map((c) => (
+                    <Select.Option key={c.id} value={c.id}>{c.name}</Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Form>
+          ),
+        });
+
+        modalRef.current = modal;
+      });
+
+      dispatch({ type: actionType, payload: values });
+    } catch (error) {
+      modal.destroy();
+    }
+  }, [categories, dispatch]);
+
+  const onClickEdit = React.useCallback((item) => async () => {
+    showCategoryModal(
+      'Chỉnh sửa danh mục',
+      ActionTypes.UPDATE_CATEGORY,
+      item,
+    );
+  }, [showCategoryModal]);
+
   const columns = [
     {
-      width: 70,
+      width: 100,
       title: 'Id',
       dataIndex: 'id',
     },
@@ -59,19 +117,28 @@ const CategoryManagePage = () => {
       render: (created_at) => dayjs.utc(created_at || undefined).format('HH:mm DD/MM/YYYY')
     },
     {
-      width: 120,
+      width: 200,
       title: 'Chức năng',
       dataIndex: 'functions',
       key: 'functions',
       render: (_, item) => {
         return (
-          <Button
-            danger
-            type="primary"
-            onClick={onClickDelete(item)}
-          >
-            Xóa
-          </Button>
+          <div>
+            <Button
+              type="primary"
+              className={styles.buttonSeparator}
+              onClick={onClickEdit(item)}
+            >
+              Chỉnh sửa
+            </Button>
+            <Button
+              danger
+              type="primary"
+              onClick={onClickDelete(item)}
+            >
+              Xóa
+            </Button>
+          </div>
         )
       }
     },
@@ -80,7 +147,7 @@ const CategoryManagePage = () => {
   React.useEffect(() => {
     if (!modalRef.current) return;
 
-    let loading = addLoading || deleteLoading;
+    let loading = addLoading || updateLoading || deleteLoading;
 
     if (loading) {
       modalRef.current.update({
@@ -92,67 +159,19 @@ const CategoryManagePage = () => {
           disabled: loading
         }
       });
-    } else if(modalRef.current) {
+    } else if (modalRef.current) {
       modalRef.current.destroy();
-
       modalRef.current = null;
-      
-      form?.resetFields();
     }
-  }, [deleteLoading, addLoading, form]);
+  }, [addLoading, updateLoading, deleteLoading]);
 
   React.useEffect(() => {
     dispatch({ type: ActionTypes.GET_CATEGORIES });
   }, [dispatch]);
 
-  const onClickAddCategory = React.useCallback(async () => {
-    let modal;
-
-    try {
-      const values = await new Promise((resolve, reject) => {
-        modal = Modal.confirm({
-          title: 'Thêm danh mục',
-          onCancel: reject,
-          onOk: (c) => {
-            form.submit();
-          },
-          content: (
-            <Form
-              form={form}
-              autoComplete="off"
-              labelCol={{ span: 8 }}
-              wrapperCol={{ span: 16 }}
-              initialValues={{ categoryName: '', parentCategory: null }}
-              style={{ margin: '24px 0 -24px -38px' }}
-              onFinish={resolve}
-            >
-              <Form.Item
-                label="Tên danh mục"
-                name="categoryName"
-                rules={[{ required: true, message: 'Vui lòng nhập tên danh mục' }]}
-              >
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Danh mục cha" name="parentCategory">
-                <Select placeholder="Chọn thư mục cha">
-                  {categories.filter((x) => !x.type).map((c) => (
-                    <Select.Option key={c.id} value={c.id}>{c.name}</Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Form>
-          ),
-        });
-
-        modalRef.current = modal;
-      });
-
-      dispatch({ type: ActionTypes.ADD_CATEGORY, payload: values });
-    } catch (error) {
-      modal.destroy();
-    }
-  }, [form, categories, dispatch]);
+  const onClickAddCategory = React.useCallback(() => {
+    showCategoryModal('Thêm danh mục', ActionTypes.ADD_CATEGORY);
+  }, [showCategoryModal]);
 
   const cardExtra = React.useMemo(() => (
     <div className={styles.cardExtra}>
@@ -178,7 +197,7 @@ const CategoryManagePage = () => {
   return (
     <div className={styles.container}>
       <Card
-        title="Quản lý sản phẩm"
+        title="Quản lý danh mục sản phẩm"
         extra={cardExtra}
         bodyStyle={{ padding: 0 }}
       >
@@ -189,6 +208,7 @@ const CategoryManagePage = () => {
           tableLayout="fixed"
           dataSource={categories}
           pagination={{ pageSize: 7 }}
+          expandable={{ childrenColumnName: 'subs' }}
         />
       </Card>
     </div>
