@@ -138,7 +138,7 @@ const InComeManagePage = () => {
           className={(styles.customerDetailCard, styles.cardSeparator)}
         >
           <Table
-            rowKey="Id"
+            rowKey={(record) => `${+record.price}_${Date.now()}`}
             columns={columns2}
             dataSource={yearbudget}
             pagination={{ pageSize: 4 }}

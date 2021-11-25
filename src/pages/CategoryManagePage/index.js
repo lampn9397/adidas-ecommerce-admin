@@ -37,9 +37,9 @@ const CategoryManagePage = () => {
     modalRef.current = modal;
   }, [dispatch]);
 
-  const onSearch = React.useCallback((text) => {
+  // const onSearch = React.useCallback((text) => {
 
-  }, []);
+  // }, []);
 
   const showCategoryModal = React.useCallback(async (title, actionType, initialValues = { id: null, name: '', type: null, subs: [] }) => {
     let modal;
@@ -184,15 +184,15 @@ const CategoryManagePage = () => {
         Thêm danh mục
       </Button>
 
-      <div className={styles.searchContainer}>
+      {/* <div className={styles.searchContainer}>
         <Input.Search
           enterButton
           placeholder="Tìm kiếm danh mục..."
           onSearch={onSearch}
         />
-      </div>
+      </div> */}
     </div>
-  ), [onClickAddCategory, onSearch]);
+  ), [onClickAddCategory]);
 
   return (
     <div className={styles.container}>

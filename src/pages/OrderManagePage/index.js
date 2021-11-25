@@ -1,7 +1,12 @@
 import React from 'react';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { Tag, Table, Button, Input } from 'antd';
+import {
+  Tag,
+  Table,
+  Button,
+  // Input,
+} from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.css';
@@ -22,9 +27,9 @@ const OrderManagePage = () => {
     dispatch({ type: ActionTypes.SELECT_TRANSACTION, payload: item });
   }, [dispatch]);
 
-  const onSearch = React.useCallback((text) => {
+  // const onSearch = React.useCallback((text) => {
 
-  }, []);
+  // }, []);
 
   const columns = [
     {
@@ -91,13 +96,13 @@ const OrderManagePage = () => {
 
   return (
     <div className={styles.container}>
-      <div className={styles.searchContainer}>
+      {/* <div className={styles.searchContainer}>
         <Input.Search
           enterButton
           placeholder="Mã đơn hàng"
           onSearch={onSearch}
         />
-      </div>
+      </div> */}
 
       <Table
         rowKey="id"
