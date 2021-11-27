@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from 'react';
-import { Card, Tag, Table } from 'antd';
-import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Card, Tag, Table, Select, Button } from 'antd';
 
 import styles from './styles.module.css';
 import { formatCurrency } from '../../utils';
+import * as ActionTypes from '../../redux/actionTypes';
 import { routes, transactionStatusColor, transactionStatusLabel } from '../../constants';
 
 const OrderDetailPage = () => {
@@ -13,6 +15,10 @@ const OrderDetailPage = () => {
   if (!selectedTransaction) {
     return <Redirect to={routes.ORDERS.path} />;
   }
+
+  const dispatch = useDispatch();
+
+  const updateLoading = useSelector((state) => state.transactions.updateLoading);
 
   const columns = [
     {
@@ -42,6 +48,33 @@ const OrderDetailPage = () => {
     },
   ];
 
+  const [state, setState] = React.useState({
+    status: selectedTransaction.status,
+  });
+
+  const onChangeSelect = React.useCallback((value) => {
+    setState((prevState) => ({ ...prevState, status: value }));
+  }, []);
+
+  const onSubmit = React.useCallback(() => {
+    const canUpdate = state.status !== selectedTransaction.status;
+
+    if (!canUpdate) return;
+
+    dispatch({
+      type: ActionTypes.UPDATE_TRANSACTION,
+      payload: {
+        id: selectedTransaction.id,
+        status: state.status,
+      },
+    });
+  }, [
+    dispatch,
+    state.status,
+    selectedTransaction.id,
+    selectedTransaction.status,
+  ]);
+
   return (
     <div className={styles.container}>
       <Card title="Chi tiết đơn hàng" className={styles.customerDetailCard}>
@@ -51,7 +84,13 @@ const OrderDetailPage = () => {
         </div>
         <div className={styles.fieldContainer}>
           <div className={styles.fieldLabel}><span>Trạng thái:</span></div>
-          <Tag color={transactionStatusColor[selectedTransaction.status]}>{transactionStatusLabel[selectedTransaction.status]}</Tag>
+          <Select value={state.status} disabled={updateLoading} onChange={onChangeSelect}>
+            {Object.keys(transactionStatusColor).map((key) => (
+              <Select.Option value={+key}>
+                <Tag color={transactionStatusColor[key]}>{transactionStatusLabel[key]}</Tag>
+              </Select.Option>
+            ))}
+          </Select>
         </div>
         <div className={styles.fieldContainer}>
           <div className={styles.fieldLabel}><span>Tên khách hàng:</span></div>
@@ -80,6 +119,17 @@ const OrderDetailPage = () => {
         <div className={styles.fieldContainer}>
           <div className={styles.fieldLabel}><span>Giao hàng:</span></div>
           <span>{selectedTransaction.shipping}</span>
+        </div>
+
+        <div className={styles.submitContainer}>
+          <Button
+            type="primary"
+            disabled={updateLoading}
+            loading={updateLoading}
+            onClick={onSubmit}
+          >
+            Cập nhật
+          </Button>
         </div>
       </Card>
 

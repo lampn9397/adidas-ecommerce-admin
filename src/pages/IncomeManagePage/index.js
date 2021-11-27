@@ -127,7 +127,7 @@ const InComeManagePage = () => {
           bodyStyle={{ padding: 0 }}
         >
           <Table
-            rowKey="Id"
+            rowKey={(record) => `${+record.price}_${Date.now()}`}
             columns={columns2}
             dataSource={yearbudget}
             pagination={{ pageSize: 4 }}
