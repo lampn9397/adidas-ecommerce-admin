@@ -9,9 +9,8 @@
   margin-right: 4px;
 }
 
-.searchContainer {
+.searchInput {
   width: 300px;
-  align-self: flex-end;
 }
 .addProductButton {
   margin-right: 24px;

@@ -4,12 +4,12 @@ import utc from 'dayjs/plugin/utc';
 import { push } from 'connected-react-router';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { Card, Table, Button, Input, Modal, Image } from 'antd';
+import { Card, Table, Button, Modal, Image, AutoComplete } from 'antd';
 
 import styles from './styles.module.css';
 import { routes } from '../../constants';
-import { formatCurrency } from '../../utils';
 import * as ActionTypes from '../../redux/actionTypes';
+import { formatCurrency, getFormatImageSource } from '../../utils';
 
 dayjs.extend(utc)
 
@@ -21,6 +21,12 @@ const ProductManagePage = () => {
   const products = useSelector((state) => state.products.productList)
 
   const deleteLoading = useSelector((state) => state.products.deleteLoading);
+
+  const searchSuggests = useSelector((state) => state.products.searchSuggests);
+
+  const isSearched = useSelector((state) => state.products.isSearched);
+
+  const searchResults = useSelector((state) => state.products.searchResults);
 
   const modalRef = React.useRef();
 
@@ -42,10 +48,6 @@ const ProductManagePage = () => {
     dispatch({ type: ActionTypes.SELECT_PRODUCT, payload: item });
   }, [dispatch]);
 
-  const onSearch = React.useCallback((text) => {
-
-  }, []);
-
   const columns = [
     {
       title: 'Id',
@@ -58,15 +60,7 @@ const ProductManagePage = () => {
     {
       title: 'Hình ảnh',
       dataIndex: 'image',
-      render: (imageSource) => {
-        let customImageSource = imageSource;
-
-        if (!customImageSource.startsWith('http')) {
-          customImageSource = `http://127.0.0.1:8000/${customImageSource}`
-        }
-
-        return <Image src={customImageSource} width={100} />;
-      }
+      render: (imageSource) => <Image src={getFormatImageSource(imageSource)} width={100} />,
     },
     {
       width: 200,
@@ -124,6 +118,18 @@ const ProductManagePage = () => {
     dispatch(push(routes.ADD_PRODUCT.path));
   }, [dispatch]);
 
+  const onSelect = React.useCallback((text) => {
+    dispatch({ type: ActionTypes.SUBMIT_PRODUCT_SUGGEST, payload: text });
+  }, [dispatch]);
+
+  const onSearch = React.useCallback((text) => {
+    dispatch({ type: ActionTypes.SUGGEST_SEARCH_PRODUCT, payload: text });
+  }, [dispatch]);
+
+  const onClear = React.useCallback(() => {
+    dispatch({ type: ActionTypes.CLEAR_PRODUCT_SUGGEST, payload: '' });
+  }, [dispatch]);
+
   const cardExtra = React.useMemo(() => (
     <div className={styles.cardExtra}>
       <Button
@@ -135,15 +141,23 @@ const ProductManagePage = () => {
         Thêm sản phẩm
       </Button>
 
-      <div className={styles.searchContainer}>
-        <Input.Search
-          enterButton
-          placeholder="Tìm kiếm sản phẩm..."
-          onSearch={onSearch}
-        />
-      </div>
+      <AutoComplete
+        allowClear
+        options={searchSuggests.map((x) => ({ label: x.name, value: x.name }))}
+        className={styles.searchInput}
+        onSelect={onSelect}
+        onSearch={onSearch}
+        onClear={onClear}
+        placeholder="Tìm kiếm sản phẩm..."
+      />
     </div>
-  ), [onClickAddProduct, onSearch]);
+  ), [
+    onClear,
+    onSearch,
+    onSelect,
+    onClickAddProduct,
+    searchSuggests,
+  ]);
 
   return (
     <div className={styles.container}>
@@ -156,7 +170,7 @@ const ProductManagePage = () => {
           rowKey="id"
           loading={loading}
           columns={columns}
-          dataSource={products}
+          dataSource={isSearched ? searchResults : products}
           pagination={{ pageSize: 5 }}
         />
       </Card>

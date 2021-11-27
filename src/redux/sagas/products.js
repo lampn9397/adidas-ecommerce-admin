@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
 import { push } from 'connected-react-router';
-import { put, call, fork, select, takeLeading } from 'redux-saga/effects';
+import { put, call, fork, select, takeLeading, takeLatest } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
 import { apiErrorHandler } from '../../utils';
@@ -196,10 +196,26 @@ function* selectProductAction() {
   yield put(push(routes.PRODUCT_DETAIL.path));
 }
 
-export default function* appSaga() {
+function* suggestSearchProductAction(action) {
+  try {
+    const { data } = yield axiosClient.get(`/product/search-products?name=${action.payload}`);
+
+    if (data.status === responseStatus.OK) {
+      yield put({ type: ActionTypes.SUGGEST_SEARCH_PRODUCT_SUCCESS, payload: data.results });
+      return;
+    }
+  } catch (error) {
+
+  }
+
+  yield put({ type: ActionTypes.SUGGEST_SEARCH_PRODUCT_FAILED });
+}
+
+export default function* productsSaga() {
   yield takeLeading(ActionTypes.GET_PRODUCTS, getProducts);
   yield takeLeading(ActionTypes.ADD_PRODUCT, addProductAction);
   yield takeLeading(ActionTypes.UPDATE_PRODUCT, updateProductAction);
   yield takeLeading(ActionTypes.DELETE_PRODUCT, deleteProductAction);
   yield takeLeading(ActionTypes.SELECT_PRODUCT, selectProductAction);
+  yield takeLatest(ActionTypes.SUGGEST_SEARCH_PRODUCT, suggestSearchProductAction);
 }
