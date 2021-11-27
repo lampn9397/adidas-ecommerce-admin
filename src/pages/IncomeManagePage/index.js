@@ -20,8 +20,6 @@ const InComeManagePage = () => {
   });
 
   const selectYear = React.useCallback((date, dateString) => {
-    console.log("sdwd ", date);
-    console.log("sdwd ", dateString);
     setState((prevState) => ({
       ...prevState,
       yearSelected: dateString
@@ -33,11 +31,9 @@ const InComeManagePage = () => {
         dateString
       }
     });
-    // console.log("sdwd ", pay);
   }, [dispatch, state.viewType]);
 
   const onClickChange = React.useCallback((viewType) => () => {
-    console.log("sdwd ", viewType);
     setState((prevState) => ({
       ...prevState,
       viewType
@@ -49,7 +45,6 @@ const InComeManagePage = () => {
         dateString: state.yearSelected
       }
     });
-    // console.log("sdwd ", pay);
   }, [dispatch, state.yearSelected]);
 
   const columns2 = [
@@ -113,17 +108,10 @@ const InComeManagePage = () => {
 
   return (
     <div className={styles.container}>
-      {/* <div className={styles.searchContainer}>
-        <Input.Search
-          enterButton
-          placeholder="Tìm kiếm sản phẩm"
-          onSearch={onSearch}
-        />
-      </div> */}
-
       <Card
         title="Danh mục các sản phẩm bán chạy"
         className={(styles.customerDetailCard, styles.cardSeparator)}
+        bodyStyle={{ padding: 0 }}
       >
         <Table
           rowKey="product_id"
@@ -136,6 +124,7 @@ const InComeManagePage = () => {
         <Card
           title="Bảng doanh thu theo năm"
           className={(styles.customerDetailCard, styles.cardSeparator)}
+          bodyStyle={{ padding: 0 }}
         >
           <Table
             rowKey="Id"
@@ -152,14 +141,14 @@ const InComeManagePage = () => {
           <div>
             <DatePicker onChange={selectYear} picker="year" />
             <Button
-              type="primary"
+              type={state.viewType === 'month' ? "primary" : 'ghost'}
               className={styles.buttonSeparator}
               onClick={onClickChange("month")}
             >
               Tháng
             </Button>
             <Button
-              type="primary"
+              type={state.viewType === 'year' ? "primary" : 'ghost'}
               className={styles.buttonSeparator}
               onClick={onClickChange("year")}
             >

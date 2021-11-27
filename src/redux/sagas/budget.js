@@ -29,7 +29,6 @@ function* getYearBudgetAction(action) {
 
   try {
     const { payload } = action;
-    console.log(payload)
 
     const { data } = yield axiosClient.get(`/order/admin/budget-date?date=01-01-${payload.dateString}&group=${payload.viewType}`);
 

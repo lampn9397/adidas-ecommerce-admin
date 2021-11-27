@@ -18,3 +18,7 @@
 .cardSeparator {
   margin-bottom: 50px;
 }
+
+.cardExtra {
+  display: flex;
+}
