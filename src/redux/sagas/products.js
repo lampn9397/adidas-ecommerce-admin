@@ -197,6 +197,8 @@ function* selectProductAction() {
 }
 
 function* suggestSearchProductAction(action) {
+  if (!action.payload) return;
+
   try {
     const { data } = yield axiosClient.get(`/product/search-products?name=${action.payload}`);
 
