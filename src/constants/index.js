@@ -104,6 +104,7 @@ export const sideMenuItems = [
 export const localStorageKey = {
   SIDEBAR_COLLAPSED: 'SIDEBAR_COLLAPSED',
   LOGIN_INFO: 'LOGIN_INFO',
+  RECENTLY_EMAIL: 'RECENTLY_EMAIL',
 };
 
 export const responseStatus = {
