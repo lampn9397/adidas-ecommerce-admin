@@ -27,13 +27,15 @@ export const routes = {
     path: '/users',
     component: UserManagePage
   },
-  ORDERS: {
-    path: '/orders',
-    exact: true,
-    component: OrderManagePage
+  ORDERS: (userId = '') => {
+    return {
+      path: `/orders/${userId}`,
+      component: OrderManagePage,
+      defaultParam: ':userId'
+    }
   },
   ORDER_DETAIL: {
-    path: '/orders/detail',
+    path: '/order/detail',
     component: OrderDetailPage
   },
   CATEGORIES: {
@@ -86,7 +88,7 @@ export const sideMenuItems = [
   },
   {
     title: 'Quản lý đơn hàng',
-    path: routes.ORDERS.path,
+    path: routes.ORDERS().path,
     icon: <FaShoppingCart />,
   },
   {

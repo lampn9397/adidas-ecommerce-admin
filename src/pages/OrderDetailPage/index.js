@@ -13,7 +13,7 @@ const OrderDetailPage = () => {
   const selectedTransaction = useSelector((state) => state.transactions.selectedTransaction);
 
   if (!selectedTransaction) {
-    return <Redirect to={routes.ORDERS.path} />;
+    return <Redirect to={routes.ORDERS().path} />;
   }
 
   const dispatch = useDispatch();
