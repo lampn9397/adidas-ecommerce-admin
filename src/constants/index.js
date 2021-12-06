@@ -28,10 +28,16 @@ export const routes = {
     component: UserManagePage
   },
   ORDERS: (userId = '') => {
+    let path = `/orders`;
+
+    if(userId) {
+      path = `/orders/${userId}`
+    }
+
     return {
-      path: `/orders/${userId}`,
+      path,
       component: OrderManagePage,
-      defaultParam: ':userId'
+      defaultParam: '/:userId?'
     }
   },
   ORDER_DETAIL: {
