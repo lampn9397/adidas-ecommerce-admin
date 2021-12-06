@@ -43,7 +43,7 @@ const OrderDetailPage = () => {
     {
       width: 200,
       title: 'Giá',
-      dataIndex: ['product', 'price'],
+      dataIndex: 'price',
       render: (text) => formatCurrency(`${text} VNĐ`)
     },
   ];
