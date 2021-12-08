@@ -36,7 +36,6 @@ function* getYearBudgetAction(action) {
       const budgets = data.results
         .sort((a, b) => a[payload.viewType] - b[payload.viewType])
         .map((item) => ({ ...item, price: +item.price }))
-      console.log(budgets);
       yield put({ type: ActionTypes.GET_YEARBUDGET_SUCCESS, payload: budgets });
       return;
     }

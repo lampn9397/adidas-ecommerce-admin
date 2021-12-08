@@ -33,7 +33,6 @@ const OrderManagePage = () => {
   // }, []);
 
   let { userId } = useParams();
-  console.log(userId)
 
   const columns = [
     {

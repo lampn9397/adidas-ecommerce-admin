@@ -30,7 +30,7 @@ export const routes = {
   ORDERS: (userId = '') => {
     let path = `/orders`;
 
-    if(userId) {
+    if (userId) {
       path = `/orders/${userId}`
     }
 
