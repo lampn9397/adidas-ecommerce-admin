@@ -137,7 +137,7 @@ const InComeManagePage = () => {
         className={styles.customerDetailCard}
         extra={
           <div>
-            <DatePicker onChange={selectYear} picker="year" />
+            <DatePicker onChange={selectYear} picker="year" placeholder={state.viewType === 'month' ? 'chọn tháng' : "chọn năm"} />
             <Button
               type={state.viewType === 'month' ? "primary" : 'ghost'}
               className={styles.buttonSeparator}
