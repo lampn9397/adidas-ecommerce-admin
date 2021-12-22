@@ -125,6 +125,7 @@ const InComeManagePage = () => {
       payload: {
         dateString: now.getFullYear(),
         viewType: 'month'
+        //tri
       }
     });
   }, [dispatch]);
