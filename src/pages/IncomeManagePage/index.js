@@ -19,7 +19,8 @@ const InComeManagePage = () => {
     yearSelected: new Date().getFullYear()
   });
 
-  const selectYear = React.useCallback((date, dateString) => {
+  const onDatePickerChange = React.useCallback((date, dateString) => {
+    console.log('dateString > ', dateString);
     setState((prevState) => ({
       ...prevState,
       yearSelected: dateString
@@ -47,9 +48,37 @@ const InComeManagePage = () => {
     });
   }, [dispatch, state.yearSelected]);
 
-  const columns2 = [
+  const sharedValues = React.useMemo(() => {
+    const values = {
+      datepickerDisabled: true,
+      monthYearTableTitle: 'Năm',
+      chartTitle: 'Năm',
+      monthYearIncomeCard: 'Bảng doanh thu theo năm',
+      datepickerPlaceholder: 'Chọn năm',
+      monthButtonType: 'ghost',
+      yearButtonType: 'primary',
+      datepickerFormat: 'YYYY',
+      monthYearIncomeChart: 'Biểu đồ doanh thu theo năm',
+    };
+
+    if (state.viewType === 'month') {
+      values.datepickerDisabled = false;
+      values.monthYearIncomeTableTitle = 'Tháng';
+      values.chartTitle = 'Tháng';
+      values.monthYearIncomeCard = 'Bảng doanh thu theo tháng';
+      values.datepickerPlaceholder = 'Chọn năm';
+      values.monthButtonType = 'primary';
+      values.yearButtonType = 'ghost';
+      values.datepickerFormat = 'YYYY';
+      values.monthYearIncomeChart = 'Biểu đồ doanh thu theo tháng';
+    }
+
+    return values;
+  }, [state.viewType]);
+
+  const monthYearIncomeColumns = [
     {
-      title: state.viewType === 'month' ? 'Tháng' : "Năm",
+      title: sharedValues.monthYearTableTitle,
       dataIndex: state.viewType,
     },
     {
@@ -59,7 +88,7 @@ const InComeManagePage = () => {
     },
   ];
 
-  const columns = [
+  const productIncomeColumns = [
     {
       title: "No.",
       dataIndex: "product_id",
@@ -84,11 +113,8 @@ const InComeManagePage = () => {
     data: yearbudget,
     xField: state.viewType,
     yField: "price",
-    point: {
-      size: 5,
-      shape: "diamond",
-    },
-    xAxis: { title: { text: state.viewType === 'month' ? "Tháng" : 'Năm' } },
+    point: { size: 5, shape: "diamond" },
+    xAxis: { title: { text: sharedValues.chartTitle } },
     yAxis: { title: { text: "Doanh thu" } },
   };
 
@@ -113,47 +139,57 @@ const InComeManagePage = () => {
       >
         <Table
           rowKey="product_id"
-          columns={columns}
           dataSource={budget}
           pagination={{ pageSize: 4 }}
+          columns={productIncomeColumns}
         />
       </Card>
-      {
-        <Card
-          title={state.viewType === 'month' ? 'Bảng doanh thu theo tháng' : "Bảng doanh thu theo năm"}
-          className={(styles.customerDetailCard, styles.cardSeparator)}
-          bodyStyle={{ padding: 0 }}
-        >
-          <Table
-            rowKey={(record) => `${+record.price}_${Date.now()}`}
-            columns={columns2}
-            dataSource={yearbudget}
-            pagination={{ pageSize: 4 }}
-          />
-        </Card>
-      }
+
       <Card
-        title={state.viewType === 'month' ? 'Biểu đồ doanh thu theo tháng' : "Biểu đồ doanh thu theo năm"}
+        bodyStyle={{ padding: 0 }}
+        title={sharedValues.monthYearIncomeCard}
+        className={(styles.customerDetailCard, styles.cardSeparator)}
+      >
+        <Table
+          dataSource={yearbudget}
+          pagination={{ pageSize: 4 }}
+          columns={monthYearIncomeColumns}
+          rowKey={(record) => `${+record.price}_${Date.now()}`}
+        />
+      </Card>
+
+      <Card
         className={styles.customerDetailCard}
-        extra={
-          <div>
-            <DatePicker onChange={selectYear} picker="year" placeholder={state.viewType === 'month' ? 'chọn tháng' : "chọn năm"} />
+        title={sharedValues.monthYearIncomeChart}
+        extra={(
+          <>
+            <DatePicker
+              picker="year"
+              inputReadOnly
+              allowClear={false}
+              className={styles.buttonSeparator}
+              format={sharedValues.datepickerFormat}
+              disabled={sharedValues.datepickerDisabled}
+              placeholder={sharedValues.datepickerPlaceholder}
+              onChange={onDatePickerChange}
+            />
+
             <Button
-              type={state.viewType === 'month' ? "primary" : 'ghost'}
+              type={sharedValues.monthButtonType}
               className={styles.buttonSeparator}
               onClick={onClickChange("month")}
             >
               Tháng
             </Button>
             <Button
-              type={state.viewType === 'year' ? "primary" : 'ghost'}
+              type={sharedValues.yearButtonType}
               className={styles.buttonSeparator}
               onClick={onClickChange("year")}
             >
               Năm
             </Button>
-          </div>
-        }
+          </>
+        )}
       >
         <Line {...config} />
       </Card>
