@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Card, Table, Button, DatePicker } from "antd";
 import { Line } from "@ant-design/charts";
-
+// My comment
 import styles from "./styles.module.css";
 import * as ActionTypes from "../../redux/actionTypes";
 import { formatCurrency } from "../../utils";
