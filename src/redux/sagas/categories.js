@@ -94,8 +94,11 @@ function* updateCategory(action) {
 
     const body = {
       name: payload.name,
-      type: payload.type,
     };
+
+    if (payload.type) {
+      body.type = payload.type;
+    }
 
     const { data } = yield axiosClient.put(`/category/${payload.id}`, body);
 
