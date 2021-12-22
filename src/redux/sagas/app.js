@@ -1,4 +1,4 @@
-import { put, call, select, takeLeading } from 'redux-saga/effects';
+import { put, call, select, takeLeading, delay } from 'redux-saga/effects';
 
 import * as ActionTypes from '../actionTypes';
 import { apiErrorHandler } from '../../utils';
@@ -37,6 +37,7 @@ function* loginAction(action) {
     const { data } = yield axiosClient.post('/login', formData);
 
     if (data.status === responseStatus.OK) {
+      yield delay(500)
       axiosClient.defaults.headers.Authorization = `Bearer ${data.results.token}`;
 
       yield put({
