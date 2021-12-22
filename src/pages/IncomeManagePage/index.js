@@ -20,7 +20,6 @@ const InComeManagePage = () => {
   });
 
   const onDatePickerChange = React.useCallback((date, dateString) => {
-    console.log('dateString > ', dateString);
     setState((prevState) => ({
       ...prevState,
       yearSelected: dateString
