@@ -124,8 +124,10 @@ export const responseError = {
   UNAUTHENTICATED: 'Unauthenticated.',
 };
 
+export const API_HOST = 'http://127.0.0.1:8000';
+
 export const axiosClient = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api-admin'
+  baseURL: `${API_HOST}/api-admin`
 });
 
 export const imageListSeparator = ';';

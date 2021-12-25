@@ -1,7 +1,7 @@
 import { put } from '@redux-saga/core/effects';
 
 import * as ActionTypes from '../redux/actionTypes';
-import { imageListSeparator, responseError } from '../constants';
+import { API_HOST, imageListSeparator, responseError } from '../constants';
 import { notification } from 'antd';
 
 export const formatCurrency = (text = '') => {
@@ -21,7 +21,7 @@ export const getFormatImageSource = (imageSource) => {
   let customImageSource = imageSource.trim();
 
   if (!customImageSource.startsWith('http')) {
-    customImageSource = `http://127.0.0.1:8000/${customImageSource}`
+    customImageSource = `${API_HOST}/${customImageSource}`
   }
 
   return customImageSource;
